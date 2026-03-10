@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404: Not Found">
+  <div class="min-h-[50vh] flex flex-col items-center justify-center text-center px-4">
+    <div class="text-primary-500 font-mono text-xl mb-4">404</div>
+    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-[var(--text-color)] mb-4">
+      Page temporarily displaced
+    </h1>
+    <p class="text-lg text-[var(--text-muted)] max-w-md mb-8">
+      The agent assigned to fetch this page seems to have hallucinated the URL. Let's get you back on track.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4">
+      <a 
+        href="/" 
+        class="bg-primary-600 hover:bg-primary-700 text-white font-medium px-6 py-3 rounded-lg transition-colors shadow-sm"
+      >
+        Return Home
+      </a>
+      <a 
+        href="/blog" 
+        class="bg-[var(--border-color)] hover:bg-[var(--bg-color)] text-[var(--text-color)] font-medium px-6 py-3 rounded-lg transition-colors border border-[var(--border-color)] focus:ring-2 focus:ring-primary-500 focus:outline-none"
+      >
+        Browse Articles
+      </a>
+    </div>
+  </div>
+</BaseLayout>

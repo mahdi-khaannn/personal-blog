@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+
+  return uniqueTags.map((tag) => {
+    const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
+    return {
+      params: { tag },
+      props: { posts: filteredPosts },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout title={`Articles tagged: ${tag} | Mahdi Khan`}>
+  <div class="mb-6 flex items-center text-sm text-[var(--text-muted)]">
+    <a href="/blog" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Blog</a>
+    <span class="mx-2">/</span>
+    <a href="/tags" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Tags</a>
+    <span class="mx-2">/</span>
+    <span class="text-[var(--text-color)] capitalize">{tag}</span>
+  </div>
+
+  <header class="mb-12 border-b border-[var(--border-color)] pb-8">
+    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-[var(--text-color)] mb-4">
+      Tagged: <span class="text-primary-600 dark:text-primary-400 capitalize">{tag}</span>
+    </h1>
+    <p class="text-xl text-[var(--text-muted)] max-w-2xl leading-relaxed">
+      {posts.length} article{posts.length === 1 ? '' : 's'} on this topic.
+    </p>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+    {posts.map((post) => (
+      <article class="flex flex-col group cursor-pointer border border-[var(--border-color)] rounded-2xl p-4 bg-base-50 dark:bg-base-900 hover:border-primary-500/50 transition-colors shadow-sm relative">
+        <a href={`/blog/${post.slug}/`} class="absolute inset-0 z-10"><span class="sr-only">View full article</span></a>
+        
+        {post.data.image && (
+          <div class="aspect-video w-full rounded-xl bg-[var(--border-color)] overflow-hidden mb-5">
+            <img 
+              src={post.data.image.url} 
+              alt={post.data.image.alt} 
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+        )}
+        
+        <div class="flex items-center gap-2 mb-3 z-20 relative text-xs">
+          <span class="text-[var(--text-muted)]">
+            {new Date(post.data.pubDate).toLocaleDateString('en-us', {
+              year: 'numeric', month: 'short', day: 'numeric',
+            })}
+          </span>
+          {post.data.readingTime && (
+            <span class="text-[var(--text-muted)] before:content-['·'] before:mx-1">
+              {post.data.readingTime} min read
+            </span>
+          )}
+        </div>
+        
+        <h2 class="text-xl font-bold tracking-tight text-[var(--text-color)] group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-3 line-clamp-3">
+          {post.data.title}
+        </h2>
+        <p class="text-[var(--text-muted)] text-sm line-clamp-3 mb-4 flex-grow">
+          {post.data.description}
+        </p>
+      </article>
+    ))}
+  </div>
+</BaseLayout>

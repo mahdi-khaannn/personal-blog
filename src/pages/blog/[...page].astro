@@ -1,0 +1,106 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = (await getCollection('blog'))
+    .filter(p => !p.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  
+  // Generate pages of 12 posts per page
+  return paginate(posts, { pageSize: 12 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<BaseLayout 
+  title="Blog | Mahdi Khan"
+  description="Analysis, tutorials, and digests on AI Agents and multi-agent system frameworks."
+>
+  <header class="mb-12 border-b border-[var(--border-color)] pb-8">
+    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-[var(--text-color)] mb-4">The Synthesis</h1>
+    <p class="text-xl text-[var(--text-muted)] max-w-2xl leading-relaxed">
+      Deep-dive architectural breakdowns and practitioner guides inside the agency ecosystem.
+    </p>
+  </header>
+
+  {page.data.length === 0 ? (
+    <div class="py-16 text-center border border-dashed border-[var(--border-color)] rounded-xl">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      </div>
+      <h3 class="text-xl font-bold text-[var(--text-color)] mb-2">No articles found</h3>
+      <p class="text-[var(--text-muted)] max-w-sm mx-auto">
+        I'm currently drafting the first deep dives. Check back soon or <a href="/newsletter" class="text-primary-600 dark:text-primary-400 font-medium hover:underline">subscribe</a> to get notified when they drop.
+      </p>
+    </div>
+  ) : (
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+      {page.data.map((post: any) => (
+        <article class="flex flex-col group cursor-pointer border border-[var(--border-color)] rounded-2xl p-4 bg-base-50 dark:bg-base-900 hover:border-primary-500/50 transition-colors shadow-sm relative">
+          <a href={`/blog/${post.slug}/`} class="absolute inset-0 z-10"><span class="sr-only">View full article</span></a>
+          
+          {post.data.image && (
+            <div class="aspect-video w-full rounded-xl bg-[var(--border-color)] overflow-hidden mb-5">
+              <Image 
+                src={post.data.image.src} 
+                alt={post.data.image.alt}
+                width={600}
+                height={338} 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          )}
+          
+          <div class="flex items-center gap-2 mb-3">
+            {post.data.tags && post.data.tags.slice(0,1).map((tag: string) => (
+              <span class="text-xs font-semibold px-2 py-1 bg-primary-100 text-primary-800 dark:bg-primary-900/50 dark:text-primary-300 rounded-md z-20 relative">
+                {tag}
+              </span>
+            ))}
+            <span class="text-xs text-[var(--text-muted)] whitespace-nowrap">
+              {new Date(post.data.pubDate).toLocaleDateString('en-us', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </span>
+            {post.data.readingTime && (
+              <span class="text-xs text-[var(--text-muted)] whitespace-nowrap before:content-['·'] before:mx-1">
+                {post.data.readingTime} min read
+              </span>
+            )}
+          </div>
+          
+          <h2 class="text-xl font-bold tracking-tight text-[var(--text-color)] group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-3 line-clamp-3">
+            {post.data.title}
+          </h2>
+          <p class="text-[var(--text-muted)] text-sm line-clamp-3 mb-4 flex-grow">
+            {post.data.description}
+          </p>
+        </article>
+      ))}
+    </div>
+  )}
+
+  {page.lastPage > 1 && (
+    <nav class="flex items-center justify-between border-t border-[var(--border-color)] pt-8 mt-12 mb-16" aria-label="Pagination">
+        <div class="flex flex-1 justify-between sm:justify-end gap-2">
+            {page.url.prev ? (
+                <a href={page.url.prev} class="relative inline-flex items-center rounded-md bg-[var(--bg-color)] px-4 py-2 text-sm font-semibold text-[var(--text-color)] ring-1 ring-inset ring-[var(--border-color)] hover:bg-primary-50 dark:hover:bg-primary-900/40 focus-visible:outline-offset-0 transition-colors">Previous</a>
+            ) : (
+                <span class="relative inline-flex items-center rounded-md bg-[var(--bg-color)] px-4 py-2 text-sm font-semibold text-[var(--text-muted)] ring-1 ring-inset ring-[var(--border-color)] opacity-50 cursor-not-allowed">Previous</span>
+            )}
+            
+            {page.url.next ? (
+                <a href={page.url.next} class="relative inline-flex items-center rounded-md bg-[var(--bg-color)] px-4 py-2 text-sm font-semibold text-[var(--text-color)] ring-1 ring-inset ring-[var(--border-color)] hover:bg-primary-50 dark:hover:bg-primary-900/40 focus-visible:outline-offset-0 transition-colors">Next</a>
+            ) : (
+                <span class="relative inline-flex items-center rounded-md bg-[var(--bg-color)] px-4 py-2 text-sm font-semibold text-[var(--text-muted)] ring-1 ring-inset ring-[var(--border-color)] opacity-50 cursor-not-allowed">Next</span>
+            )}
+        </div>
+    </nav>
+  )}
+</BaseLayout>

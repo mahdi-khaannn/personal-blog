@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mrs+Saint+Delafield&display=swap');
+
+@theme {
+  /* GitHub Action Blue / Accent Green Hybrid Palette */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6; /* GitHub Accent Blue vibes */
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  /* GitHub Light Mode Palette (Base) */
+  --color-base-50: #ffffff;
+  --color-base-100: #f6f8fa; /* GitHub light surface */
+  --color-base-200: #d0d7de; /* GitHub light border */
+  --color-base-800: #656d76; /* GitHub light muted */
+  --color-base-900: #1F2328; /* GitHub light text */
+
+  /* GitHub Dark Mode Palette (Extended) */
+  --color-dark-bg: #0d1117;
+  --color-dark-surface: #161b22;
+  --color-dark-border: #30363d;
+  --color-dark-muted: #8b949e;
+  --color-dark-text: #c9d1d9;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Inter", system-ui, sans-serif; /* Unified modern technical sans */
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-cursive: "Mrs Saint Delafield", cursive; /* Intense signature personality */
+}
+
+@layer base {
+  :root {
+    --bg-color: var(--color-base-50);
+    --surface-color: var(--color-base-100);
+    --text-color: var(--color-base-900);
+    --text-muted: var(--color-base-800);
+    --border-color: var(--color-base-200);
+  }
+
+  /* Dark mode class attached to HTML element */
+  :root.dark {
+    --bg-color: var(--color-dark-bg);
+    --surface-color: var(--color-dark-surface);
+    --text-color: var(--color-dark-text);
+    --text-muted: var(--color-dark-muted);
+    --border-color: var(--color-dark-border);
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+  }
+
+  :root.dark body::after {
+    opacity: 0.055;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+  }
+}
+
+/* Typography optimized for reading */
+@layer components {
+  .prose-container {
+    @apply max-w-[65ch] mx-auto;
+  }
+
+  .prose-content {
+    @apply text-lg leading-[1.75];
+  }
+
+  .prose-content p {
+    @apply mb-6;
+  }
+
+  .prose-content h1,
+  .prose-content h2,
+  .prose-content h3 {
+    @apply font-semibold mt-10 mb-4 tracking-tight;
+  }
+
+  .prose-content h1 {
+    @apply text-4xl sm:text-5xl font-display font-medium tracking-normal;
+  }
+
+  .prose-content h2 {
+    @apply text-2xl sm:text-3xl font-display font-medium tracking-normal border-b border-[var(--border-color)] pb-2 mt-12;
+  }
+
+  .prose-content h3 {
+    @apply text-xl sm:text-2xl;
+  }
+
+  .prose-content a {
+    @apply text-primary-600 hover:text-primary-700 underline decoration-primary-500/30 underline-offset-4 transition-colors;
+  }
+
+  :root.dark .prose-content a {
+    @apply text-primary-500 hover:text-primary-400 decoration-primary-500/50;
+  }
+
+  .prose-content blockquote {
+    @apply border-l-4 border-primary-500 pl-4 py-1 my-6 italic text-[var(--text-muted)] bg-primary-50/50 rounded-r-lg;
+  }
+
+  :root.dark .prose-content blockquote {
+    @apply bg-primary-900/20 text-[var(--text-muted)];
+  }
+
+  .prose-content ul {
+    @apply list-disc list-outside ml-6 mb-6 space-y-2;
+  }
+
+  .prose-content ol {
+    @apply list-decimal list-outside ml-6 mb-6 space-y-2;
+  }
+
+  .prose-content code {
+    @apply bg-[var(--border-color)] px-1.5 py-0.5 rounded text-sm font-mono text-primary-700;
+  }
+
+  :root.dark .prose-content code {
+    @apply text-primary-400;
+  }
+
+  .prose-content pre {
+    @apply bg-[var(--border-color)] p-4 rounded-lg overflow-x-auto mb-6 text-sm leading-normal;
+  }
+
+  .prose-content pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+}

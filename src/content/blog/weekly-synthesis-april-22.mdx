@@ -1,0 +1,37 @@
+---
+title: "The Weekly Synthesis: April 22, 2026"
+description: "A practitioner's roundup of the week. Covering the new Anthropic Tool Use API, open-source memory layer launches, and fine-tuning small models for specific agentic roles."
+pubDate: 2026-04-22
+author: "Mahdi Khan"
+image:
+  src: "../../assets/images/weekly-digest-1.jpg"
+  alt: "Abstract nodes representing an agent network"
+tags: ["digest", "news", "industry"]
+---
+
+Welcome to the Weekly Synthesis. Every week, I curate the 5-8 developments in the AI systems ecosystem that actually matter for practitioners trying to build things in production.
+
+## 1. Anthropic Drops Tool Use / Function Calling
+
+We've been waiting for this. Claude 3 Opus and Sonnet now natively support tool use (function calling) in their API. 
+
+**Why it matters:** Previously, to get Claude to use tools reliably, we had to rely on complex XML-parsing system prompts. The new native support brings it up to parity with OpenAI's format, making it drastically easier to drop Claude models into existing multi-agent pipelines like LangChain or AutoGen. 
+
+In my early testing, Opus is exhibiting superior reasoning when selecting *between* tools with overlapping descriptions compared to GPT-4 Turbo.
+
+## 2. Mem0: An Open Source Memory Layer
+
+A new YC-backed project called [Mem0](https://github.com/mem0ai/mem0) just open-sourced their memory layer for AI agents.
+
+**Why it matters:** Writing context to a vector database is easy. Managing short-term vs. long-term memory, entity resolution (knowing that "John" and "Mr. Smith" in two different sessions are the same person), and memory decay is notoriously hard. Mem0 proposes a unified API that handles personalization and state across sessions. If you are building a product where agents need to remember user preferences continuously, this repo is worth a deep dive.
+
+## 3. The Rise of "Small Specialist" Agents
+
+A fantastic paper from Berkeley this week titled *"Specialist vs Generalist Models for Agentic Workflows"* dropped some compelling numbers.
+
+**Why it matters:** The paper demonstrated that taking an open-source 8B parameter model (like Llama 3) and fine-tuning it purely on the *JSON schema of a single tool* results in higher reliability and lower latency for that specific task than using a zero-shot prompt with GPT-4. 
+
+This reinforces the architectural pattern we've been discussing: **Don't use a massive foundational model as a router AND a worker.** Use Opus/GPT-4 for your orchestration/supervisor node, but farm out the actual execution tasks to small, fast, fine-tuned local models.
+
+---
+*If you enjoyed this digest, ensure you are subscribed to get the next one directly in your inbox on Monday.*

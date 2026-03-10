@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import Callout from '../../components/mdx/Callout.astro';
+import NewsletterCTA from '../../components/mdx/NewsletterCTA.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  // Sort from newest to oldest
+  const sortedPosts = allPosts
+    .filter(p => !p.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  return sortedPosts.map((post, i) => ({
+    params: { slug: post.slug },
+    props: { 
+      post,
+      prevPost: i + 1 < sortedPosts.length ? sortedPosts[i + 1] : null, // Older post
+      nextPost: i > 0 ? sortedPosts[i - 1] : null // Newer post
+    },
+  }));
+}
+
+const { post, prevPost, nextPost } = Astro.props;
+const { Content, headings } = await post.render();
+---
+
+<ArticleLayout frontmatter={post.data} headings={headings} prevPost={prevPost} nextPost={nextPost}>
+  <Content components={{ Callout, NewsletterCTA }} />
+</ArticleLayout>

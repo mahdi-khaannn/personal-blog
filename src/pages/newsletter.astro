@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsletterForm from '../components/newsletter/NewsletterForm';
+---
+
+<BaseLayout 
+  title="Newsletter | Mahdi Khan"
+  description="Subscribe to the weekly synthesis of AI agents, frameworks, and multi-agent system architectures."
+>
+  <div class="max-w-3xl mx-auto">
+    <header class="mb-12 text-center">
+      <h1 class="text-4xl sm:text-5xl font-display font-medium tracking-normal text-[var(--text-color)] mb-4">The Weekly Synthesis</h1>
+      <p class="text-xl text-[var(--text-muted)] max-w-2xl mx-auto leading-relaxed">
+        Join 5,000+ engineering leaders getting the highest-signal analysis on AI agents, minus the noise.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div class="flex -space-x-3">
+          <img class="inline-block h-10 w-10 rounded-full ring-4 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
+          <img class="inline-block h-10 w-10 rounded-full ring-4 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
+          <img class="inline-block h-10 w-10 rounded-full ring-4 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
+          <img class="inline-block h-10 w-10 rounded-full ring-4 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
+          <div class="inline-flex h-10 w-10 items-center justify-center rounded-full ring-4 ring-[var(--bg-color)] bg-[var(--border-color)] text-xs font-bold text-[var(--text-color)] z-10">+5k</div>
+        </div>
+        <div class="text-sm text-[var(--text-muted)] font-medium text-left">
+          Trusted by researchers at <br class="hidden sm:block"/><span class="text-[var(--text-color)] font-bold">OpenAI</span> & <span class="text-[var(--text-color)] font-bold">Anthropic</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="relative max-w-xl mx-auto mb-20 group">
+      <div class="absolute -inset-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-3xl blur opacity-20 group-hover:opacity-50 transition duration-1000 group-hover:duration-300"></div>
+      <div class="relative bg-[var(--bg-color)] p-1 rounded-2xl shadow-xl border border-[var(--border-color)]">
+        <div class="bg-[var(--bg-color)] p-6 sm:p-8 rounded-xl">
+          <h2 class="text-2xl font-display font-medium tracking-normal text-[var(--text-color)] mb-6 text-center">Get the next issue this Monday</h2>
+          <NewsletterForm client:load />
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+      <div class="p-6 rounded-2xl bg-[var(--bg-color)] border border-[var(--border-color)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group">
+        <div class="w-10 h-10 bg-[var(--border-color)] text-[var(--text-color)] rounded-lg flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        </div>
+        <h3 class="font-display font-medium text-xl tracking-normal text-[var(--text-color)] mb-3">Deep Dives & Tutorials</h3>
+        <p class="text-[var(--text-muted)] text-sm leading-relaxed">
+          Architectural breakdowns of LangGraph, CrewAI, and custom orchestration patterns you can run in production today.
+        </p>
+      </div>
+      
+      <div class="p-6 rounded-2xl bg-[var(--bg-color)] border border-[var(--border-color)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group">
+        <div class="w-10 h-10 bg-[var(--border-color)] text-[var(--text-color)] rounded-lg flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+        </div>
+        <h3 class="font-display font-medium text-xl tracking-normal text-[var(--text-color)] mb-3">Curation over Volume</h3>
+        <p class="text-[var(--text-muted)] text-sm leading-relaxed">
+          No SEO spam or fluff. Just the weeks 5-8 most important papers, tools, and launches contextualized for practitioners.
+        </p>
+      </div>
+    </div>
+
+    <!-- Placeholder for Past Issues -->
+    <div class="border-t border-[var(--border-color)] pt-12">
+      <h2 class="text-2xl font-bold tracking-tight text-[var(--text-color)] mb-8">Past Issues</h2>
+      <div class="text-center py-12 bg-[var(--bg-color)] rounded-xl border border-dashed border-[var(--border-color)]">
+        <p class="text-[var(--text-muted)]">
+          The archive is currently empty. The first issue drops soon!
+        </p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

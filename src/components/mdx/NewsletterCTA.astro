@@ -1,0 +1,27 @@
+---
+import NewsletterForm from '../newsletter/NewsletterForm';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = "Join the synthesis.", 
+  description = "Get the highest-signal analysis on AI agents and orchestration frameworks every Monday." 
+} = Astro.props;
+---
+
+<div class="my-10 max-w-2xl mx-auto rounded-2xl bg-gradient-to-b from-[var(--border-color)] to-[var(--bg-color)] p-px shadow-sm">
+  <div class="bg-[var(--bg-color)] rounded-[15px] p-6 sm:p-8 text-center flex flex-col items-center">
+    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 rounded-xl flex items-center justify-center mb-5 rotate-3 -mr-2">
+       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9.5C2 7 4 5 6.5 5H18c2.2 0 4 1.8 4 4v8Z"></path><polyline points="15,9 18,9 22,13"></polyline></svg>
+    </div>
+    <h3 class="font-display font-medium text-2xl tracking-normal text-[var(--text-color)] mb-3 leading-tight">{title}</h3>
+    <p class="text-[var(--text-muted)] text-base mb-6 max-w-md mx-auto leading-relaxed">{description}</p>
+    
+    <div class="w-full max-w-sm mx-auto">
+      <NewsletterForm client:load />
+    </div>
+  </div>
+</div>

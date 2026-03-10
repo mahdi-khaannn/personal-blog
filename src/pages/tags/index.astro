@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// A simple utility to get all unique tags
+const allPosts = await getCollection('blog');
+const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+---
+
+<BaseLayout title="Topics | Mahdi Khan">
+  <header class="mb-12 border-b border-[var(--border-color)] pb-8">
+    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-[var(--text-color)] mb-4">Topics</h1>
+    <p class="text-xl text-[var(--text-muted)] max-w-2xl leading-relaxed">
+      Browse articles by framework, pattern, or type.
+    </p>
+  </header>
+
+  <div class="flex flex-wrap gap-4">
+    {tags.length === 0 ? (
+      <p class="text-[var(--text-muted)]">No topics found yet.</p>
+    ) : (
+      tags.map((tag) => (
+        <a 
+          href={`/tags/${tag}`} 
+          class="text-lg font-medium px-4 py-2 bg-[var(--border-color)] hover:bg-primary-100 hover:text-primary-800 dark:hover:bg-primary-900/50 dark:hover:text-primary-300 transition-colors rounded-lg border border-[var(--border-color)]"
+        >
+          {tag}
+        </a>
+      ))
+    )}
+  </div>
+</BaseLayout>

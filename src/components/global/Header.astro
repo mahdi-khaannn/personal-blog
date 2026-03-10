@@ -1,0 +1,29 @@
+---
+import Navigation from './Navigation.astro';
+import SearchModal from './SearchModal';
+import DarkModeToggle from './DarkModeToggle';
+---
+
+<header class="sticky top-0 z-40 w-full border-b border-[var(--border-color)] bg-[var(--bg-color)]/80 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    
+    <div class="flex items-center gap-2">
+      <a
+        href="/"
+        class="text-5xl sm:text-6xl font-cursive font-medium text-[#00ff94] tracking-tight -rotate-6 hover:scale-105 transition-transform duration-300 origin-left block mt-1"
+        aria-label="Home"
+      >
+        Mahdi
+      </a>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-4">
+      <Navigation />
+      <div class="flex items-center border-l border-[var(--border-color)] pl-2 md:pl-4 md:ml-2 gap-1 md:gap-2">
+        <SearchModal client:load />
+        <DarkModeToggle client:load />
+      </div>
+    </div>
+    
+  </div>
+</header>

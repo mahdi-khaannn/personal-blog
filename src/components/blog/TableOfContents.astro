@@ -1,0 +1,71 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+// Filter to only h2 and h3
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{toc.length > 0 && (
+  <nav class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pl-4 border-l-2 border-[var(--border-color)] pb-8">
+    <h4 class="text-sm font-bold uppercase tracking-wider text-[var(--text-color)] mb-4">On this page</h4>
+    <ul class="space-y-3 text-sm" id="toc-list">
+      {toc.map((heading) => (
+        <li class={`${heading.depth === 3 ? 'ml-4' : ''}`}>
+          <a
+            href={`#${heading.slug}`}
+            class="toc-link block text-[var(--text-muted)] hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200 line-clamp-2"
+            data-slug={heading.slug}
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<script>
+  function setupScrollspy() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = entry.target.getAttribute('id');
+          if (!id) return;
+          
+          const link = document.querySelector(`.toc-link[data-slug="${id}"]`);
+          if (!link) return;
+          
+          if (entry.isIntersecting) {
+            // Remove active from all
+            document.querySelectorAll('.toc-link').forEach(l => {
+              l.classList.remove('text-primary-600', 'dark:text-primary-400', 'font-medium', 'translate-x-1');
+              l.classList.add('text-[var(--text-muted)]');
+            });
+            
+            // Add to current
+            link.classList.remove('text-[var(--text-muted)]');
+            link.classList.add('text-primary-600', 'dark:text-primary-400', 'font-medium', 'translate-x-1');
+          }
+        });
+      },
+      { rootMargin: '-10% 0px -80% 0px' } // Trigger when heading is near the top
+    );
+    
+    // Obserse all h2 and h3 in the prose content
+    document.querySelectorAll('.prose-content h2, .prose-content h3').forEach((heading) => {
+      observer.observe(heading);
+    });
+  }
+  
+  setupScrollspy();
+  document.addEventListener('astro:page-load', setupScrollspy);
+</script>

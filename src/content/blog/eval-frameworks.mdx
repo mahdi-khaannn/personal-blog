@@ -1,0 +1,106 @@
+---
+title: "Evaluating Agent Performance in CI/CD"
+description: "How to integrate continuous evaluation frameworks for large language models directly into your GitHub Actions pipelines."
+pubDate: 2026-04-10
+author: "Mahdi Khan"
+image:
+  src: "../../assets/images/eval-frameworks.jpg"
+  alt: "Abstract nodes representing an agent network"
+tags: ["devops", "evals", "testing"]
+---
+
+"It works on my machine" is a dangerous phrase in traditional software engineering. In AI engineering, "It looked good on the first three prompts" is the equivalent.
+
+The stochastic nature of LLMs means that tweaking your agent's system prompt to fix a bug in Edge Case A might silently degrade performance in Edge Case B. You cannot rely on "vibes" to know if a change is safe to deploy.
+
+You need **Evals**. Continuous, automated evaluations integrated directly into your CI/CD pipeline.
+
+## What is an Eval?
+
+An Eval is a programmatic test that scores the output of your agent against a predefined rubric. 
+
+Unlike traditional unit tests which assert exact string matches (`assert output == "Hello World"`), Evals usually require an *Evaluator LLM* to grade the output.
+
+### The LLM-as-a-Judge Pattern
+
+The industry standard approach is to use a highly capable model (like GPT-4-Turbo or Claude 3.5 Sonnet) as an impartial judge.
+
+You provide the Judge with:
+1. The user's input.
+2. Your agent's response.
+3. A strict grading rubric.
+
+## Building a Pipeline in GitHub Actions
+
+Here is a practical look at how you might integrate this into a PR workflow using Python and `pytest`.
+
+### Step 1: The Dataset
+You need a golden dataset of test cases. Never test against live production data without knowing the ground truth.
+
+```json
+// evals/dataset.json
+[
+  {
+    "query": "What is the capital of France?",
+    "expected_context": "Paris",
+    "theme": "Geography"
+  },
+  {
+    "query": "Write a python function to reverse a string.",
+    "expected_context": "def reverse(",
+    "theme": "Coding"
+  }
+]
+```
+
+### Step 2: The Pytest Harness
+We write a standard test that runs our agent and then calls our "Judge" LLM to score the output.
+
+```python
+import pytest
+import my_agent
+from eval_judge import evaluate_accuracy
+
+@pytest.mark.parametrize("test_case", load_dataset())
+def test_agent_accuracy(test_case):
+    # 1. Run our agent
+    actual_response = my_agent.run(test_case["query"])
+    
+    # 2. Score the response using an LLM Judge
+    score, reasoning = evaluate_accuracy(
+        query=test_case["query"],
+        expected=test_case["expected_context"],
+        actual=actual_response
+    )
+    
+    # 3. Assert passing score (e.g. 4 or 5 out of 5)
+    assert score >= 4, f"Failed: {reasoning}"
+```
+
+### Step 3: The Action Workflow
+Finally, we run these tests automatically on every PR.
+
+```yaml
+name: Agent Evals
+
+on: [pull_request]
+
+jobs:
+  run-evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+      - run: pip install -r requirements.txt
+      - name: Run Pytest Evals
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: pytest evals/ --junitxml=reports/evals.xml
+```
+
+## The Cost Trap
+
+The primary downside of this pattern is cost. Running a suite of 500 evals using GPT-4 as a judge on every commit will rapidly burn through your API budget.
+
+**The Solution:** Use cheaper, smaller models (like Llama 3 8B) for your Judges, and fine-tune them specifically on your grading rubric. You only need GPT-4 to generate the initial golden datasets.

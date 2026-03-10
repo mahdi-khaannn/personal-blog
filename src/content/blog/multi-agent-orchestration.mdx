@@ -1,0 +1,60 @@
+---
+title: "Multi-Agent Orchestration Patterns: Hierarchical vs. Flat"
+description: "A practitioner's breakdown of multi-agent orchestration patterns: when to use hierarchical, parallel, or sequential agent coordination and where each methodology commonly breaks down in production."
+pubDate: 2026-04-15
+author: "Mahdi Khan"
+image:
+  src: "../../assets/images/abstract-nodes.jpg"
+  alt: "Abstract nodes representing an agent network"
+tags: ["architecture", "multi-agent-systems", "patterns"]
+readingTime: 8
+---
+
+When constructing multi-agent systems using frameworks like LangGraph or CrewAI, your fundamental architectural decision is the **orchestration pattern**. This dictates how your agents communicate, delegate, and reach consensus.
+
+In my experience scaling agentic workflows across different environments, making the wrong choice here leads to compounding token costs, persistent hallucinations, and infinite loops.
+
+## The Flat (Parallel) Pattern
+
+A flat pattern implies all agents have equal standing and can be invoked either concurrently by a user prompt or in a completely sequential pipeline where output $A \rightarrow B \rightarrow C$.
+
+### Advantages
+- **Simplicity:** Very easy to reason about mentally and trace in logs.
+- **Speed:** When parallelized, it is the fastest way to gather domain-specific information.
+
+### Disadvantages
+- **No Consensus Mechanism:** If Agent A (Researcher) and Agent B (Writer) disagree on a fact, there is no built-in authority to resolve it without writing complex guardrails.
+
+```python
+# A simple sequential graph with LangGraph
+from langgraph.graph import StateGraph, END
+import operator
+from typing import TypedDict, Annotated, Sequence
+
+class AgentState(TypedDict):
+    messages: Annotated[Sequence[str], operator.add]
+    intermediate_data: dict
+
+workflow = StateGraph(AgentState)
+workflow.add_node("researcher", researcher_node)
+workflow.add_node("writer", writer_node)
+
+workflow.add_edge("researcher", "writer")
+workflow.add_edge("writer", END)
+workflow.set_entry_point("researcher")
+
+app = workflow.compile()
+```
+
+## The Hierarchical Pattern
+
+CrewAI heavily advocates for this model, and LangGraph supports it elegantly via Supervisor Nodes. In a hierarchy, a "Manager" or "Supervisor" agent delegates tasks to worker agents, reviews their output, and makes the final decision on when the objective is met.
+
+### The Supervisor Bottleneck
+
+While elegant on paper, in production you will frequently hit **supervisor context limits**. The manager agent is forced to hold the context of every subordinate's output. If you have 5 agents generating 2,000 tokens of output each, your supervisor is parsing 10,000 tokens just to make a yes/no routing decision.
+
+> Every time the supervisor loops, you incur latent token costs that obliterate your API budget.
+
+### When to Use Hierarchy
+Use hierarchy when the task genuinely requires iterative refinement driven by an explicit rubric. Do not use it for simple "Extract and Format" pipelines.

@@ -1,0 +1,82 @@
+---
+const currentPath = Astro.url.pathname;
+const links = [
+  { name: 'Home', url: '/' },
+  { name: 'Blog', url: '/blog' },
+  { name: 'Newsletter', url: '/newsletter' },
+  { name: 'About', url: '/about' },
+];
+---
+
+<nav class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-medium">
+  <!-- Standard Link -->
+  <a href="/" class={`transition-colors duration-200 hover:text-[var(--text-color)] ${currentPath === '/' ? 'text-[var(--text-color)]' : 'text-[var(--text-muted)]'}`}>
+    Home
+  </a>
+
+  <!-- Dropdown: Content -->
+  <div class="relative group">
+    <button class="flex items-center gap-1 transition-colors duration-200 hover:text-[var(--text-color)] text-[var(--text-muted)] focus:outline-none py-2">
+      <span>Knowledge Base</span>
+      <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+    
+    <!-- Dropdown Menu Panel -->
+    <div class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform translate-y-1 group-hover:translate-y-0">
+      <div class="w-64 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg shadow-xl overflow-hidden p-2 flex flex-col gap-1">
+        <a href="/blog" class="block px-3 py-2.5 rounded-md hover:bg-[var(--border-color)] transition-colors group/item">
+          <div class="text-[var(--text-color)] font-semibold group-hover/item:text-primary-600 dark:group-hover/item:text-[#dc2626]">Deep Dives</div>
+          <div class="text-xs text-[var(--text-muted)] mt-0.5 font-normal">Technical essays, agentic patterns, and analyses.</div>
+        </a>
+        <a href="/newsletter" class="block px-3 py-2.5 rounded-md hover:bg-[var(--border-color)] transition-colors group/item">
+          <div class="text-[var(--text-color)] font-semibold group-hover/item:text-primary-600 dark:group-hover/item:text-[#dc2626]">The Weekly Synthesis</div>
+          <div class="text-xs text-[var(--text-muted)] mt-0.5 font-normal">High-signal newsletter sent every Monday.</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <a href="/about" class={`transition-colors duration-200 hover:text-[var(--text-color)] ${currentPath.startsWith('/about') ? 'text-[var(--text-color)]' : 'text-[var(--text-muted)]'}`}>
+    About
+  </a>
+</nav>
+
+<!-- Mobile Nav Toggle (handled carefully with a simple group peer config or just an Alpine.js/VanillaJS approach) -->
+<div class="md:hidden flex items-center">
+  <button id="mobile-menu-btn" class="p-2 text-[var(--text-muted)] hover:text-[var(--text-color)]" aria-label="Open menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="4" x2="20" y1="12" y2="12"></line>
+      <line x1="4" x2="20" y1="6" y2="6"></line>
+      <line x1="4" x2="20" y1="18" y2="18"></line>
+    </svg>
+  </button>
+</div>
+
+<!-- Mobile Menu overlay (hidden by default) -->
+<div id="mobile-menu" class="hidden absolute top-16 left-0 right-0 z-50 bg-[var(--bg-color)] border-b border-[var(--border-color)] shadow-xl p-4 md:hidden">
+  <div class="flex flex-col space-y-4 text-center pb-4">
+    {links.map((link) => (
+      <a
+        href={link.url}
+        class={`block py-2 text-base font-medium ${
+          currentPath === link.url || (currentPath.startsWith(link.url) && link.url !== '/')
+            ? 'text-primary-600 dark:text-primary-400'
+            : 'text-[var(--text-muted)]'
+        }`}
+      >
+        {link.name}
+      </a>
+    ))}
+  </div>
+</div>
+
+<script is:inline>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  
+  btn?.addEventListener('click', () => {
+    menu?.classList.toggle('hidden');
+  });
+</script>

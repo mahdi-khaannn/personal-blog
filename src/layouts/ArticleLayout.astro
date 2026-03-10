@@ -1,0 +1,175 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/blog/TableOfContents.astro';
+import NewsletterForm from '../components/newsletter/NewsletterForm';
+import RelatedArticles from '../components/blog/RelatedArticles.astro';
+import { Image } from 'astro:assets';
+
+const { frontmatter, headings, prevPost, nextPost } = Astro.props;
+const { title, description, pubDate, author, image, tags, readingTime } = frontmatter;
+
+// Computer SEO Schema
+const schemaJSON = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": title,
+  "description": description,
+  "image": image ? new URL(image.src, Astro.url.origin).toString() : '',
+  "author": {
+    "@type": "Person",
+    "name": "Mahdi Khan",
+    "url": new URL('/about', Astro.url.origin).toString()
+  },
+  "datePublished": new Date(pubDate).toISOString(),
+});
+---
+
+<BaseLayout 
+  title={`${title} | Mahdi Khan`}
+  description={description}
+  image={image?.url}
+  schema={schemaJSON}
+>
+  <!-- Sticky Reading Progress Bar -->
+  <div id="reading-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary-400 to-primary-600 z-50 origin-left scale-x-0 w-full" aria-hidden="true"></div>
+  
+  <article class="w-full relative">
+    <!-- ARTICLE HEADER REGION -->
+    <header class="mb-12 max-w-4xl mx-auto text-center">
+      <div class="flex items-center justify-center gap-2 mb-6 flex-wrap">
+        {tags && tags.map((tag: string) => (
+          <a href={`/tags/${tag}`} class="text-xs font-semibold px-2 py-1 bg-[var(--border-color)] text-[var(--text-color)] rounded-md hover:bg-primary-500 hover:text-white dark:hover:bg-[#dc2626] transition-colors">
+            {tag}
+          </a>
+        ))}
+        <span class="text-sm text-[var(--text-muted)] border-l pl-2 border-[var(--border-color)] ml-2">
+          {new Date(pubDate).toLocaleDateString('en-us', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </span>
+        {readingTime && (
+          <span class="text-sm text-[var(--text-muted)] before:content-['·'] before:mx-2">
+            {readingTime} min read
+          </span>
+        )}
+      </div>
+      
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-normal text-[var(--text-color)] mb-6 leading-tight">
+        {title}
+      </h1>
+      
+      <p class="text-xl md:text-2xl text-[var(--text-muted)] max-w-3xl mx-auto leading-relaxed">
+        {description}
+      </p>
+
+      {image && (
+        <div class="mt-12 w-full rounded-2xl overflow-hidden bg-[var(--border-color)] aspect-video shadow-md">
+          <Image 
+            src={image.src} 
+            alt={image.alt || title} 
+            width={1200}
+            height={630}
+            class="w-full h-full object-cover" 
+          />
+        </div>
+      )}
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-7xl mx-auto">
+      <!-- MAIN BODY -->
+      <div class="lg:col-span-8 xl:col-span-9 leading-relaxed">
+        <div id="article-body-content" class="prose-container prose-content min-w-0 w-full pb-16">
+          <slot />
+        </div>
+        
+        <!-- ARTICLE FOOTER REGION -->
+        <div class="border-t border-[var(--border-color)] mt-4 pt-10 pb-12 max-w-3xl mx-auto">
+          <div class="bg-[var(--bg-color)] p-6 sm:p-8 rounded-2xl border border-[var(--border-color)] shadow-sm">
+            <h3 class="font-bold text-xl text-[var(--text-color)] mb-3">Enjoyed this deep dive?</h3>
+            <p class="text-[var(--text-muted)] mb-6">
+              Get the next one sent straight to your inbox. No spam, just high-signal analysis on AI agents.
+            </p>
+            <NewsletterForm client:load />
+          </div>
+        </div>
+        
+        <!-- RELATED ARTICLES REGION -->
+        <div class="border-t border-[var(--border-color)] pt-12 pb-8 max-w-3xl mx-auto">
+          <!-- PREVIOUS / NEXT ARTICLE NAVIGATION -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-between mb-16">
+            {prevPost ? (
+              <a href={`/blog/${prevPost.slug}`} class="flex-1 p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--border-color)] hover:border-primary-500/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300 group">
+                <div class="text-[10px] text-[var(--text-muted)] mb-2 uppercase tracking-widest font-bold group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors flex items-center gap-1">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                   Previous Node
+                </div>
+                <div class="font-display font-medium text-[var(--text-color)] group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2 leading-snug">{prevPost.data.title}</div>
+              </a>
+            ) : <div class="flex-1"></div>}
+            
+            {nextPost ? (
+              <a href={`/blog/${nextPost.slug}`} class="flex-1 p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--border-color)] hover:border-primary-500/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300 group text-right">
+                <div class="text-[10px] text-[var(--text-muted)] mb-2 uppercase tracking-widest font-bold group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors flex items-center justify-end gap-1">
+                   Next Node
+                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+                <div class="font-display font-medium text-[var(--text-color)] group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2 leading-snug">{nextPost.data.title}</div>
+              </a>
+            ) : <div class="flex-1"></div>}
+          </div>
+
+          <RelatedArticles currentSlug={title} tags={tags || []} />
+        </div>
+      </div>
+
+      <!-- SIDEBAR TOC -->
+      <aside class="hidden lg:block lg:col-span-4 xl:col-span-3 dark:text-zinc-400">
+        <TableOfContents headings={headings} />
+      </aside>
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  // Reading Progress Bar Logic
+  function runReadingProgress() {
+    const progressBar = document.getElementById('reading-progress');
+    if (!progressBar) return;
+    
+    // We want to track scroll relative to the article body content explicitly
+    window.addEventListener('scroll', () => {
+      const articleContent = document.getElementById('article-body-content');
+      if (!articleContent) return;
+      
+      const winScroll = window.scrollY;
+      const elementOffset = articleContent.offsetTop;
+      const height = articleContent.scrollHeight - document.documentElement.clientHeight;
+      
+      let scrolled = (winScroll - elementOffset) / height;
+      if (scrolled < 0) scrolled = 0;
+      if (scrolled > 1) scrolled = 1;
+      
+      progressBar.style.transform = `scaleX(${scrolled})`;
+    }, { passive: true });
+  }
+  
+  // Run on initial load and view transition
+  runReadingProgress();
+  document.addEventListener('astro:page-load', runReadingProgress);
+</script>
+
+<script>
+  import mediumZoom from 'medium-zoom';
+  
+  function initZoom() {
+    mediumZoom('.prose-content img', {
+      margin: 24,
+      background: 'var(--bg-color)',
+    });
+  }
+  
+  initZoom();
+  document.addEventListener('astro:page-load', initZoom);
+</script>

@@ -1,0 +1,133 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SpotlightCard from '../components/global/SpotlightCard';
+import RotatingText from '../components/global/RotatingText';
+import ScrollPath from '../components/global/ScrollPath';
+
+const latestPosts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout title="Mahdi Khan - AI Agents & Orchestration">
+  <!-- BACKGROUND DECOR (GitHub Enterprise Vibe) -->
+  <div class="absolute top-0 inset-x-0 h-[800px] overflow-hidden pointer-events-none -z-10 select-none">
+    <div class="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[1200px] h-[500px] bg-primary-600/15 dark:bg-primary-500/10 blur-[120px] rounded-[100%]"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+  </div>
+
+  <!-- HERO REGION -->
+  <section class="py-16 md:py-24 flex flex-col items-center text-center px-4">
+    <h1 class="text-4xl md:text-6xl lg:text-7xl font-display font-medium mb-12 text-[var(--text-color)] tracking-tighter max-w-4xl leading-[1.1]">
+      The Practitioner's Guide to <br class="hidden md:block" />
+      <RotatingText client:only="react" />
+    </h1>
+    <p class="text-lg md:text-xl text-[var(--text-muted)] max-w-2xl mb-12 leading-relaxed">
+      Deep-dive analysis, architecture patterns, and tutorials for engineering leaders building the next generation of software. Signal, not noise.
+    </p>
+    
+    <!-- V2 Glowing Newsletter CTA -->
+    <div class="w-full max-w-md relative group mb-8">
+      <div class="absolute -inset-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-2xl blur opacity-25 group-hover:opacity-60 transition duration-1000 group-hover:duration-300"></div>
+      <div class="relative bg-[var(--bg-color)] p-1.5 rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3),0_0_40px_rgba(34,197,94,0.1)] border border-[var(--border-color)]">
+        <form class="flex w-full relative" action="/newsletter" method="GET">
+          <input 
+            type="email" 
+            name="email"
+            placeholder="name@example.com" 
+            required
+            class="flex-grow bg-transparent px-4 py-3 outline-none text-[var(--text-color)] placeholder:text-[var(--text-muted)]/60"
+          />
+          <button 
+            type="submit" 
+            class="bg-[var(--text-color)] text-[var(--bg-color)] font-medium px-6 py-2 m-1 rounded-lg transition-transform hover:scale-[1.02] shadow-sm whitespace-nowrap"
+          >
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Social Proof Ticker -->
+    <div class="flex items-center justify-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div class="flex -space-x-2.5">
+          <img class="inline-block h-8 w-8 rounded-full ring-2 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
+          <img class="inline-block h-8 w-8 rounded-full ring-2 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
+          <img class="inline-block h-8 w-8 rounded-full ring-2 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
+          <div class="inline-flex h-8 w-8 items-center justify-center rounded-full ring-2 ring-[var(--bg-color)] bg-[var(--border-color)] text-[10px] font-bold text-[var(--text-color)] z-10 text-center leading-none">+5k</div>
+        </div>
+        <div class="text-xs text-[var(--text-muted)] font-medium text-left leading-tight">
+          Join 5,000+ practitioners getting<br/>the weekly synthesis.
+        </div>
+    </div>
+  </section>
+
+  <!-- SCROLL PATH (LevelUp Labs Style) -->
+  <section class="py-12 border-t border-[var(--border-color)] overflow-hidden">
+    <div class="text-center mb-4">
+      <h2 class="text-3xl font-bold tracking-tight text-[var(--text-color)]">The Architecture of Autonomy</h2>
+      <p class="text-[var(--text-muted)] mt-2">A deterministic approach to agentic workflows.</p>
+    </div>
+    <ScrollPath client:only="react" />
+  </section>
+
+  <!-- LATEST ARTICLES REGION -->
+  <section class="py-12 border-t border-[var(--border-color)]">
+    <div class="flex justify-between items-end mb-8">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-[var(--text-color)]">Latest Analysis</h2>
+        <p class="text-[var(--text-muted)] mt-1">Recent deep dives and tutorials.</p>
+      </div>
+      <a href="/blog" class="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 hidden sm:block">
+        View all articles &rarr;
+      </a>
+    </div>
+
+    <!-- Article Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {latestPosts.length > 0 ? latestPosts.map((post) => (
+        <SpotlightCard client:load className="flex flex-col group touch-pan-y cursor-pointer bg-[var(--bg-color)] border border-[var(--border-color)] rounded-2xl p-4 hover:-translate-y-1 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+          <a href={`/blog/${post.slug}`} class="absolute inset-0 z-10"><span class="sr-only">View {post.data.title}</span></a>
+          {post.data.image && (
+            <div class="aspect-video w-full rounded-xl bg-[var(--border-color)] overflow-hidden mb-5 relative transition-transform duration-500 group-hover:scale-[1.02]">
+               <Image 
+                src={post.data.image.src} 
+                alt={post.data.image.alt}
+                width={600}
+                height={338}
+                class="w-full h-full object-cover"
+              />
+            </div>
+          )}
+          <div class="flex items-center gap-2 mb-3 z-20 relative">
+            {post.data.tags && post.data.tags.slice(0,1).map((tag: string) => (
+              <a href={`/tags/${tag}`} class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 bg-[var(--text-color)]/5 border border-[var(--text-color)]/20 text-[var(--text-color)] rounded-md hover:bg-primary-600/10 transition-colors">{tag}</a>
+            ))}
+            <span class="text-xs font-medium text-[var(--text-muted)]">
+              {new Date(post.data.pubDate).toLocaleDateString('en-us', { month: 'short', day: 'numeric', year: 'numeric'})}
+            </span>
+          </div>
+          <h3 class="text-xl font-display font-medium tracking-normal text-[var(--text-color)] group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2 line-clamp-2">
+            {post.data.title}
+          </h3>
+          <p class="text-[var(--text-muted)] text-sm line-clamp-3 leading-relaxed">
+            {post.data.description}
+          </p>
+        </SpotlightCard>
+      )) : (
+        <p class="col-span-full text-center py-10 text-[var(--text-muted)] border border-dashed border-[var(--border-color)] rounded-xl">
+          More articles coming directly from the agents soon.
+        </p>
+      )}
+    </div>
+    
+    <div class="mt-8 text-center sm:hidden">
+      <a href="/blog" class="inline-flex items-center justify-center w-full bg-[var(--border-color)] hover:bg-[var(--bg-color)] text-[var(--text-color)] font-medium px-4 py-3 rounded-lg transition-colors border border-[var(--border-color)] focus:ring-2 focus:ring-primary-500 focus:outline-none">
+        View all articles
+      </a>
+    </div>
+  </section>
+</BaseLayout>

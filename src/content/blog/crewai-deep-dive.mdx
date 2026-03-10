@@ -1,0 +1,105 @@
+---
+title: "CrewAI Deep Dive: Constructing Role-Playing Networks"
+description: "Why CrewAI is winning the developer experience war for multi-agent systems, and a step-by-step guide to building a production-ready research team with custom tools."
+pubDate: 2026-04-18
+author: "Mahdi Khan"
+image:
+  src: "../../assets/images/crewai-deep-dive.jpg"
+  alt: "Abstract nodes representing an agent network"
+tags: ["frameworks", "crewai", "python", "tutorial"]
+---
+
+LangGraph provides incredible low-level control of state management. AutoGen offers robust multi-agent conversation patterns. But if you want to get an agentic workflow up and running in under 50 lines of code, **[CrewAI](https://github.com/joaomdmoura/crewai)** is currently unmatched in developer experience.
+
+CrewAI models its architecture after human teams. Instead of thinking about "nodes" and "edges", you think about **Agents** (who), **Tasks** (what), and the **Crew** (how they organize).
+
+Let's build a practical example: A competitive analysis crew that takes a company name, researches their product, and writes a strategic brief.
+
+## The Architecture
+
+We will need three distinct components:
+1. **The Researcher Agent:** Needs web search capabilities and a mandate to find facts.
+2. **The Analyst Agent:** Needs to synthesize the raw facts into strategic insights.
+3. **The Tasks:** Explicit instructions mapping expected inputs to expected outputs.
+
+### Step 1: Defining the Agents
+
+The magic of CrewAI lies in the `role`, `goal`, and `backstory` parameters. These aren't just cute labels; they are aggressively injected into the system prompt to anchor the LLM's persona and prevent drift during long execution chains.
+
+```python
+from crewai import Agent
+from langchain_community.tools import DuckDuckGoSearchRun
+
+search_tool = DuckDuckGoSearchRun()
+
+researcher = Agent(
+    role='Senior Market Researcher',
+    goal='Uncover detailed, technical information about competitors',
+    backstory='You are a veteran market analyst at a top-tier consulting firm. You leave no stone unturned and focus on technical specifics rather than marketing fluff.',
+    verbose=True,
+    allow_delegation=False,
+    tools=[search_tool],
+    llm=openai_llm # Configured elsewhere
+)
+
+analyst = Agent(
+    role='Principal Strategy Consultant',
+    goal='Synthesize raw research into actionable competitive strategy',
+    backstory='You excel at seeing the big picture. You take raw data, identify market gaps, and formulate aggressive counter-strategies.',
+    verbose=True,
+    allow_delegation=True # Can ask the researcher for more info
+)
+```
+
+### Delegation is the Secret Weapon
+
+Notice that `allow_delegation=True` on the Analyst. If the Analyst receives the research report and realizes a key piece of information is missing, CrewAI natively handles the Analyst pausing its own task, formatting a new prompt, and sending the Researcher *back out* to find the missing data. 
+
+This emergent behavior requires hundreds of lines of boilerplate in other frameworks.
+
+### Step 2: Defining the Tasks
+
+Tasks in CrewAI isolate the *work* from the *worker*.
+
+```python
+from crewai import Task
+
+research_task = Task(
+    description='Analyze the company {company_name}. Find their core product features, pricing model, and target audience.',
+    expected_output='A comprehensive markdown report detailing the competitor profile.',
+    agent=researcher
+)
+
+analysis_task = Task(
+    description='Using the research provided, write a 3-point strategy on how a startup could disrupt {company_name}.',
+    expected_output='A 3-point strategic memo in markdown format.',
+    agent=analyst
+)
+```
+
+### Step 3: Assembling the Crew
+
+Finally, we bind them together.
+
+```python
+from crewai import Crew, Process
+
+competitive_crew = Crew(
+    agents=[researcher, analyst],
+    tasks=[research_task, analysis_task],
+    process=Process.sequential # Run one after the other
+)
+
+# Execute
+result = competitive_crew.kickoff(inputs={'company_name': 'Acme Corp'})
+print(result)
+```
+
+## Production Considerations
+
+While CrewAI is fantastic for prototyping, there are two primary issues you will face when moving this script to a production server:
+
+1. **Token Cost:** By default, CrewAI is very chatty under the hood. The constant back-and-forth and context forwarding can result in massive token bills. You *must* monitor usage per run.
+2. **Error Handling:** If the `search_tool` timeouts or returns an un-parseable string, the agent can enter an infinite loop of retries. You need to wrap custom tools in robust `try/except` blocks that return human-readable failure messages back to the agent so it knows to try a different approach.
+
+*In next week's deep dive, we'll look at how to swap the underlying LLM dynamically so the Researcher uses a fast open-source model while the Analyst uses GPT-4.*
