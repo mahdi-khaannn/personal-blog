@@ -67,21 +67,26 @@ const canonical = canonicalURL || new URL(Astro.url.pathname, Astro.site || Astr
     
     <!-- Setup Dark Mode Immediately to prevent flash -->
     <script is:inline>
+      const STORAGE_KEY = 'theme';
       const getThemePreference = () => {
         if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
+          return localStorage.getItem(STORAGE_KEY);
         }
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       };
-      const isDark = getThemePreference() === 'dark';
-      document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
-      
-      if (typeof localStorage !== 'undefined') {
-        const observer = new MutationObserver(() => {
-          const isDark = document.documentElement.classList.contains('dark');
-          localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      const applyThemePreference = () => {
+        const isDark = getThemePreference() === 'dark';
+        document.documentElement.classList.toggle('dark', isDark);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+      };
+
+      applyThemePreference();
+
+      if (!window.__themeEventsInitialized) {
+        document.addEventListener('astro:after-swap', applyThemePreference);
+        document.addEventListener('astro:page-load', applyThemePreference);
+        window.__themeEventsInitialized = true;
       }
     </script>
   </head>

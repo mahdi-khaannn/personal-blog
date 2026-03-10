@@ -1,6 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mrs+Saint+Delafield&display=swap');
 
 @theme {
   /* GitHub Action Blue / Accent Green Hybrid Palette */
@@ -33,7 +32,8 @@
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Inter", system-ui, sans-serif; /* Unified modern technical sans */
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --font-cursive: "Mrs Saint Delafield", cursive; /* Intense signature personality */
+  --font-brand: "Caveat Brush", cursive;
+  --font-cursive: "Caveat Brush", cursive;
 }
 
 @layer base {
@@ -43,6 +43,7 @@
     --text-color: var(--color-base-900);
     --text-muted: var(--color-base-800);
     --border-color: var(--color-base-200);
+    color-scheme: light;
   }
 
   /* Dark mode class attached to HTML element */
@@ -52,6 +53,7 @@
     --text-color: var(--color-dark-text);
     --text-muted: var(--color-dark-muted);
     --border-color: var(--color-dark-border);
+    color-scheme: dark;
   }
 
   body {

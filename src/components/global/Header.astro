@@ -2,6 +2,7 @@
 import Navigation from './Navigation.astro';
 import SearchModal from './SearchModal';
 import DarkModeToggle from './DarkModeToggle';
+import LogoWordmark from './LogoWordmark.astro';
 ---
 
 <header class="sticky top-0 z-40 w-full border-b border-[var(--border-color)] bg-[var(--bg-color)]/80 backdrop-blur-md">
@@ -10,10 +11,10 @@ import DarkModeToggle from './DarkModeToggle';
     <div class="flex items-center gap-2">
       <a
         href="/"
-        class="text-5xl sm:text-6xl font-cursive font-medium text-[#00ff94] tracking-tight -rotate-6 hover:scale-105 transition-transform duration-300 origin-left block mt-1"
+        class="group inline-flex items-center pt-1"
         aria-label="Home"
       >
-        Mahdi
+        <LogoWordmark class="text-4xl sm:text-5xl transition-transform duration-300 group-hover:scale-[1.04] group-hover:-translate-y-0.5" />
       </a>
     </div>
 

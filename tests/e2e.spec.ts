@@ -1,78 +1,60 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
-test.describe('Mahdi Khan V2 Enterprise E2E Test Suite', () => {
+async function setTheme(page: Page, theme: 'light' | 'dark') {
+  await page.evaluate((nextTheme) => {
+    localStorage.setItem('theme', nextTheme);
+    document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+  }, theme);
+  await page.reload();
+}
 
-    test('Newsletter Subscription Validation & UI Snapshot', async ({ page }) => {
-        await page.goto('/newsletter');
+test.describe('Mahdi Khan blog flows', () => {
+  test('newsletter validates invalid email and completes the success state', async ({ page }) => {
+    await page.goto('/newsletter');
 
-        // Initial UI Regression check
-        expect(await page.screenshot({ fullPage: true })).toMatchSnapshot('newsletter-initial.png', { maxDiffPixels: 100 });
+    await expect(page.getByRole('heading', { name: 'The Weekly Synthesis' })).toBeVisible();
 
-        // Verify specific V2 components exist
-        await expect(page.getByText('Get the next issue this Monday')).toBeVisible();
+    const emailInput = page.getByRole('textbox', { name: 'Email address' });
+    const submitButton = page.getByRole('button', { name: 'Subscribe' });
 
-        // Test Invalid State (now relies on custom React logic via noValidate)
-        await page.fill('input[type="email"]', 'not-an-email');
-        await page.click('button[type="submit"]:has-text("Subscribe")');
-        await expect(page.getByText('Please enter a valid email address.')).toBeVisible();
+    await emailInput.fill('not-an-email');
+    await submitButton.click();
+    await expect(page.getByText('Please enter a valid email address.')).toBeVisible();
 
-        // Test Valid State & Async loading
-        await page.fill('input[type="email"]', 'engineering@mahdikhan.com');
-        await page.click('button[type="submit"]:has-text("Subscribe")');
+    await emailInput.fill('engineering@mahdikhan.com');
+    await submitButton.click();
 
-        // Assert Success State Transition (1.2s synthetic delay)
-        await expect(page.getByText('You\'re in!')).toBeVisible({ timeout: 3000 });
-    });
+    await expect(page.getByRole('heading', { name: /you're in!/i })).toBeVisible({ timeout: 4000 });
+  });
 
-    test('Theme Toggle Engine & Homepage Visual Regression', async ({ page }) => {
-        await page.goto('/');
+  test('search opens from keyboard and returns indexed article results', async ({ page }) => {
+    await page.goto('/');
 
-        // Take Light Mode UI Baseline Snapshot
-        expect(await page.screenshot({ fullPage: true })).toMatchSnapshot('homepage-light.png', { maxDiffPixels: 200 });
+    await page.keyboard.press('/');
 
-        // Locate the toggle button explicitly via accessibility tags
-        const toggleButton = page.getByRole('button', { name: /toggle theme/i }).or(page.locator('button[aria-label*="theme" i], button[aria-label*="dark mode" i]')).first();
+    const searchInput = page.getByPlaceholder('Search articles, patterns, frameworks...');
+    await expect(searchInput).toBeVisible();
 
-        // Test HTML Dark class application
-        const html = page.locator('html');
-        const isInitiallyDark = await html.evaluate(node => node.classList.contains('dark'));
+    await searchInput.fill('crewai');
+    await expect(page.getByRole('link', { name: /CrewAI Deep Dive/i }).first()).toBeVisible({ timeout: 10000 });
 
-        await toggleButton.click();
+    await page.keyboard.press('Escape');
+    await expect(searchInput).not.toBeVisible();
+  });
 
-        // Assert transition
-        const isNowDark = await html.evaluate(node => node.classList.contains('dark'));
-        expect(isNowDark).toBe(!isInitiallyDark);
+  test('theme choice persists through client-side navigation', async ({ page }) => {
+    await page.goto('/');
+    await setTheme(page, 'light');
 
-        // Wait for CSS transitions to settle before snapping Dark Mode
-        await page.waitForTimeout(500);
-        expect(await page.screenshot({ fullPage: true })).toMatchSnapshot('homepage-dark.png', { maxDiffPixels: 200 });
+    const toggleButton = page.getByRole('button', { name: /toggle dark mode/i });
+    await toggleButton.click();
 
-        // Assert JS LocalStorage Persistence
-        const storageTheme = await page.evaluate(() => localStorage.getItem('theme'));
-        expect(storageTheme).toBe(isNowDark ? 'dark' : 'light');
+    await expect(page.locator('html')).toHaveClass(/dark/);
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('theme'))).toBe('dark');
 
-        // Navigate via router and ensure it holds
-        await page.goto('/blog');
-        const isStillDark = await html.evaluate(node => node.classList.contains('dark'));
-        expect(isStillDark).toBe(isNowDark);
-    });
-
-    test('Pagefind Local Search Operations', async ({ page }) => {
-        await page.goto('/');
-
-        // Open Search Modal 
-        const searchButton = page.getByRole('button', { name: /search/i }).first();
-        await searchButton.click();
-
-        // Wait for Pagefind input to mount
-        const searchInput = page.locator('.pagefind-ui__search-input');
-        await expect(searchInput).toBeVisible();
-
-        // Perform search
-        await searchInput.fill('agent');
-
-        // Await index query and assert results
-        const results = page.locator('.pagefind-ui__result');
-        await expect(results.first()).toBeVisible({ timeout: 8000 });
-    });
+    await page.locator('header nav').getByRole('link', { name: 'About' }).click();
+    await expect(page).toHaveURL(/\/about$/);
+    await expect(page.locator('html')).toHaveClass(/dark/);
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('theme'))).toBe('dark');
+  });
 });

@@ -30,7 +30,7 @@ export default function DarkModeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg text-base-900 dark:text-base-50 hover:bg-base-100 dark:hover:bg-base-800 transition-colors duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-base-950 group"
+      className="p-2 rounded-lg text-[var(--text-color)] hover:bg-[var(--surface-color)] transition-colors duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-color)] group"
       aria-label="Toggle Dark Mode"
     >
       <div className="transition-transform duration-500 group-hover:rotate-180">

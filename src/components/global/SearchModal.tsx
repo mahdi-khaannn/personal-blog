@@ -12,14 +12,28 @@ export default function SearchModal() {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<any[]>([]);
     const [isSearching, setIsSearching] = useState(false);
+    const [shortcutHint, setShortcutHint] = useState('/');
     const inputRef = useRef<HTMLInputElement>(null);
 
     // Keyboard shortcut CMD+K
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
+            const target = e.target as HTMLElement | null;
+            const isTypingContext = Boolean(
+                target &&
+                (target.tagName === 'INPUT' ||
+                    target.tagName === 'TEXTAREA' ||
+                    target.tagName === 'SELECT' ||
+                    target.isContentEditable)
+            );
+
             if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
                 e.preventDefault();
                 setIsOpen((prev) => !prev);
+            }
+            if (!isTypingContext && e.key === '/') {
+                e.preventDefault();
+                setIsOpen(true);
             }
             if (e.key === 'Escape' && isOpen) {
                 setIsOpen(false);
@@ -29,6 +43,12 @@ export default function SearchModal() {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isOpen]);
+
+    useEffect(() => {
+        if (typeof navigator === 'undefined') return;
+        const isApplePlatform = /Mac|iPhone|iPad/.test(navigator.platform);
+        setShortcutHint(isApplePlatform ? '⌘K' : 'Ctrl K');
+    }, []);
 
     // Load Pagefind instance dynamically
     useEffect(() => {
@@ -106,15 +126,15 @@ export default function SearchModal() {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="group flex items-center justify-between gap-2 px-3 py-1.5 w-64 md:w-80 rounded-md border border-[#30363d] bg-[#0d1117] hover:border-[#8b949e] transition-colors text-sm text-[#8b949e] focus:outline-none focus:ring-1 focus:ring-primary-500 shadow-sm"
+                className="group flex items-center justify-between gap-2 px-3 py-1.5 w-64 md:w-80 rounded-md border border-[var(--border-color)] bg-[var(--surface-color)] hover:border-primary-400/40 hover:bg-[var(--bg-color)] transition-colors text-sm text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-primary-500 shadow-sm"
                 aria-label="Search articles"
             >
                 <div className="flex items-center gap-2 truncate">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8b949e] group-hover:text-[#c9d1d9] transition-colors"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <span className="truncate group-hover:text-[#c9d1d9] transition-colors">Search or jump to...</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-muted)] group-hover:text-[var(--text-color)] transition-colors"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <span className="truncate group-hover:text-[var(--text-color)] transition-colors">Search or jump to...</span>
                 </div>
-                <span className="hidden md:inline-flex items-center text-[10px] px-1.5 py-0.5 font-medium border border-[#3d444d] rounded-sm bg-transparent group-hover:border-[#8b949e] transition-colors text-[#8b949e]">
-                    <kbd className="font-sans">/</kbd>
+                <span className="hidden md:inline-flex items-center text-[10px] px-1.5 py-0.5 font-medium border border-[var(--border-color)] rounded-sm bg-transparent group-hover:border-primary-400/40 transition-colors text-[var(--text-muted)]">
+                    <kbd className="font-sans">{shortcutHint}</kbd>
                 </span>
             </button>
 
