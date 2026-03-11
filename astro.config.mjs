@@ -15,6 +15,9 @@ import expressiveCode from 'astro-expressive-code';
 export default defineConfig({
   site: 'https://mahdikhan.com',
   prefetch: true,
+  devToolbar: {
+    enabled: process.env.PLAYWRIGHT !== '1',
+  },
   vite: {
     plugins: [tailwindcss()]
   },

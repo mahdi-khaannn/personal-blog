@@ -24,13 +24,7 @@ const latestPosts = (await getCollection('blog'))
   <!-- HERO REGION -->
   <section class="relative py-16 md:py-24 px-4">
     <div class="max-w-5xl mx-auto flex flex-col items-center text-center">
-      <div class="inline-flex items-center gap-3 rounded-full border border-[var(--border-color)]/80 bg-[var(--bg-color)]/80 px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)] shadow-sm backdrop-blur">
-        <span class="text-primary-500">(00)</span>
-        <span>Practice-led perspective</span>
-        <span>Deploying, distilling, teaching</span>
-      </div>
-
-      <h1 class="mt-8 flex max-w-5xl flex-wrap items-center justify-center gap-x-5 gap-y-4 text-balance text-4xl font-display font-medium tracking-[-0.05em] text-[var(--text-color)] sm:text-6xl lg:text-7xl">
+      <h1 class="flex max-w-5xl flex-wrap items-center justify-center gap-x-5 gap-y-4 text-balance text-4xl font-display font-medium tracking-[-0.05em] text-[var(--text-color)] sm:text-6xl lg:text-7xl">
         <span>Human-first</span>
         <RotatingText client:only="react" />
       </h1>
@@ -69,12 +63,6 @@ const latestPosts = (await getCollection('blog'))
 
   <section class="py-8 border-y border-[var(--border-color)] bg-[color-mix(in_srgb,var(--surface-color)_78%,transparent)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="mb-4 flex flex-wrap items-center justify-between gap-4">
-        <div class="text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">
-          (01) Trusted by and working alongside
-        </div>
-        <div class="text-sm text-[var(--text-muted)]">Institutions, multilaterals, and delivery partners from the portfolio work</div>
-      </div>
       <TrustedTicker />
     </div>
   </section>
@@ -82,12 +70,7 @@ const latestPosts = (await getCollection('blog'))
   <section class="py-16 md:py-24 border-b border-[var(--border-color)] overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-3xl">
-        <div class="flex items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">
-          <span>(02)</span>
-          <span class="font-brand text-xl normal-case tracking-tight text-primary-500">loop</span>
-          <span>Why this perspective compounds</span>
-        </div>
-        <h2 class="mt-5 text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-[-0.05em] text-[var(--text-color)] text-balance">
+        <h2 class="text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-[-0.05em] text-[var(--text-color)] text-balance">
           From deployed work to reusable frameworks.
         </h2>
         <p class="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--text-muted)]">
@@ -103,7 +86,6 @@ const latestPosts = (await getCollection('blog'))
   <section class="py-12 border-t border-[var(--border-color)]">
     <div class="flex justify-between items-end mb-8">
       <div>
-        <div class="mb-3 text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">(03) Latest analysis</div>
         <h2 class="text-2xl font-bold tracking-tight text-[var(--text-color)]">Latest Analysis</h2>
         <p class="text-[var(--text-muted)] mt-1">Recent deep dives and tutorials.</p>
       </div>

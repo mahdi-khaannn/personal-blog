@@ -1,18 +1,17 @@
-import { motion, useMotionValue } from 'framer-motion';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { BookOpenText, GraduationCap, Radar, type LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 const VIEWBOX_WIDTH = 1200;
 const VIEWBOX_HEIGHT = 620;
 const PATH_D = "M 170 214 C 250 72, 430 54, 520 252 S 558 468, 610 406 S 852 108, 1028 174 C 1108 208, 1124 342, 1042 430";
-const STAGE_THRESHOLDS = [0.06, 0.48, 0.82];
+const STAGE_THRESHOLDS = [0.04, 0.32, 0.56];
 
 type Stage = {
   label: string;
   title: string;
   description: string;
   icon: LucideIcon;
-  marker: string;
   posterLabel: string;
   point: { x: number; y: number };
   card: { x: number; y: number; width: number };
@@ -26,11 +25,10 @@ const stages: Stage[] = [
     description:
       'Build AI systems and digitization programs where policy, operations, and real adoption matter just as much as model quality.',
     icon: Radar,
-    marker: '01',
     posterLabel: 'Field Operator',
     point: { x: 170, y: 214 },
-    card: { x: 88, y: 294, width: 290 },
-    poster: { x: 22, y: 116, width: 168, height: 222 },
+    card: { x: 90, y: 306, width: 320 },
+    poster: { x: 34, y: 128, width: 178, height: 214 },
   },
   {
     label: 'Distill',
@@ -38,11 +36,10 @@ const stages: Stage[] = [
     description:
       'Extract what survives contact with reality: orchestration patterns, governance lessons, evaluation habits, and operating principles.',
     icon: BookOpenText,
-    marker: '02',
     posterLabel: 'Pattern Mapper',
     point: { x: 610, y: 406 },
-    card: { x: 472, y: 470, width: 320 },
-    poster: { x: 492, y: 290, width: 182, height: 230 },
+    card: { x: 446, y: 404, width: 408 },
+    poster: { x: 532, y: 270, width: 184, height: 214 },
   },
   {
     label: 'Teach',
@@ -50,11 +47,10 @@ const stages: Stage[] = [
     description:
       'Convert field-tested lessons into essays, workshops, and playbooks that make hard-won knowledge reusable for other teams.',
     icon: GraduationCap,
-    marker: '03',
     posterLabel: 'Signal Teacher',
     point: { x: 1028, y: 174 },
-    card: { x: 850, y: 236, width: 290 },
-    poster: { x: 908, y: 84, width: 172, height: 220 },
+    card: { x: 850, y: 248, width: 300 },
+    poster: { x: 912, y: 120, width: 182, height: 214 },
   },
 ];
 
@@ -70,6 +66,8 @@ export default function ScrollPath() {
   const pathProgress = useMotionValue(0);
   const ballX = useMotionValue((stages[0].point.x / VIEWBOX_WIDTH) * 100);
   const ballY = useMotionValue((stages[0].point.y / VIEWBOX_HEIGHT) * 100);
+  const ballLeft = useTransform(ballX, (value) => `${value}%`);
+  const ballTop = useTransform(ballY, (value) => `${value}%`);
   const [activeStage, setActiveStage] = useState(0);
 
   useEffect(() => {
@@ -80,14 +78,18 @@ export default function ScrollPath() {
 
       const rect = container.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const startLine = viewportHeight * 0.78;
-      const endLine = viewportHeight * 0.22;
+      const headerOffset = 92;
+      const startLine = viewportHeight * 0.9;
+      const endLine = Math.max(headerOffset + 120, viewportHeight * 0.36);
       const progressRange = rect.height + startLine - endLine;
       const rawProgress = (startLine - rect.top) / progressRange;
       const clamped = Math.max(0, Math.min(1, rawProgress));
 
       pathProgress.set(clamped);
-      const point = path.getPointAtLength(path.getTotalLength() * clamped);
+      const totalLength = path.getTotalLength();
+      if (!Number.isFinite(totalLength) || totalLength <= 0) return;
+
+      const point = path.getPointAtLength(totalLength * clamped);
       ballX.set((point.x / VIEWBOX_WIDTH) * 100);
       ballY.set((point.y / VIEWBOX_HEIGHT) * 100);
 
@@ -117,7 +119,7 @@ export default function ScrollPath() {
 
   return (
     <div ref={containerRef} className="relative mt-14">
-      <div className="relative hidden min-h-[760px] w-full overflow-hidden rounded-[2rem] border border-[var(--border-color)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface-color)_78%,transparent),color-mix(in_srgb,var(--bg-color)_92%,transparent))] px-6 py-8 shadow-[0_32px_80px_rgba(15,23,42,0.12)] md:block lg:min-h-[820px] xl:min-h-[860px] xl:px-10">
+      <div className="relative hidden min-h-[820px] w-full overflow-hidden rounded-[2rem] border border-[var(--border-color)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface-color)_78%,transparent),color-mix(in_srgb,var(--bg-color)_92%,transparent))] px-6 py-8 shadow-[0_32px_80px_rgba(15,23,42,0.12)] md:block lg:min-h-[900px] xl:min-h-[940px] xl:px-10">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_32%),radial-gradient(circle_at_85%_20%,rgba(96,165,250,0.1),transparent_24%)]" />
         <div className="pointer-events-none absolute inset-y-0 left-1/4 w-px bg-[linear-gradient(to_bottom,transparent,color-mix(in_srgb,var(--border-color)_85%,transparent),transparent)]" />
         <div className="pointer-events-none absolute inset-y-0 left-1/2 w-px bg-[linear-gradient(to_bottom,transparent,color-mix(in_srgb,var(--border-color)_85%,transparent),transparent)]" />
@@ -157,7 +159,7 @@ export default function ScrollPath() {
 
         <motion.div
           className="pointer-events-none absolute z-20 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500 shadow-[0_0_0_6px_rgba(59,130,246,0.14),0_0_28px_rgba(59,130,246,0.7)]"
-          style={{ left: ballX, top: ballY }}
+          style={{ left: ballLeft, top: ballTop }}
         />
 
         {stages.map((stage, index) => {
@@ -181,14 +183,10 @@ export default function ScrollPath() {
                 }}
               >
                 <div className="flex h-full flex-col justify-between">
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[var(--text-muted)]">
-                    <span>{stage.marker}</span>
-                    <span>Role</span>
-                  </div>
                   <div className="mt-6 flex items-center justify-start">
                     <Icon className={`h-12 w-12 transition-colors duration-500 ${isActive ? 'text-primary-400' : 'text-[var(--text-muted)]/35'}`} />
                   </div>
-                  <div className="mt-12">
+                  <div className="mt-10">
                     <div className="text-[10px] uppercase tracking-[0.28em] text-[var(--text-muted)]">{stage.posterLabel}</div>
                     <div className={`mt-3 text-5xl font-brand leading-none transition-colors duration-500 ${isActive ? 'text-primary-500/50' : 'text-primary-500/20'}`}>
                       {stage.label}

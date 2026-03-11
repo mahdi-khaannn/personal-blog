@@ -7,7 +7,11 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
 <div class="ticker-shell">
   <div class="ticker-track" aria-label="Trusted by and working alongside">
     {repeatedLogos.map((logo, index) => (
-      <span class="ticker-item" aria-hidden={index >= trustedLogos.length ? 'true' : 'false'}>
+      <span
+        class="ticker-item"
+        style={`--logo-width: ${logo.widthRem}rem;`}
+        aria-hidden={index >= trustedLogos.length ? 'true' : 'false'}
+      >
         <img
           src={logo.src}
           alt={index >= trustedLogos.length ? '' : logo.alt}
@@ -36,8 +40,8 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
     display: flex;
     width: max-content;
     align-items: center;
-    gap: 1.35rem;
-    animation: trusted-scroll 60s linear infinite;
+    gap: clamp(0.75rem, 1.8vw, 1.25rem);
+    animation: trusted-scroll 92s linear infinite;
     will-change: transform;
   }
 
@@ -46,15 +50,16 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
     display: flex;
     align-items: center;
     justify-content: center;
-    width: min(10rem, 18vw);
+    padding-inline: clamp(0.9rem, 2vw, 1.6rem);
   }
 
   .ticker-logo {
-    width: auto;
-    max-width: min(10rem, 18vw);
-    height: clamp(1.5rem, 2.5vw, 2.25rem);
+    width: min(var(--logo-width), 18vw);
+    max-width: none;
+    max-height: clamp(1.75rem, 2.8vw, 2.7rem);
+    height: auto;
     object-fit: contain;
-    opacity: 0.5;
+    opacity: 0.52;
     filter: brightness(0) invert(1);
     transition: opacity 180ms ease, filter 180ms ease, transform 180ms ease;
   }
