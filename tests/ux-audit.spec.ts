@@ -13,6 +13,8 @@ async function applyTheme(page: Page, theme: 'light' | 'dark') {
   await page.evaluate((nextTheme) => {
     localStorage.setItem('theme', nextTheme);
     document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+    document.documentElement.dataset.theme = nextTheme;
+    document.documentElement.style.colorScheme = nextTheme;
   }, theme);
   await page.reload();
 }

@@ -44,7 +44,7 @@ const finalPosts = relatedPosts.length > 0 ? relatedPosts : otherPosts.slice(0, 
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {finalPosts.map((post) => (
-    <article class="flex flex-col group cursor-pointer border border-[var(--border-color)] rounded-2xl p-4 bg-base-50 dark:bg-base-900 hover:border-primary-500/50 transition-colors shadow-sm relative col-span-1">
+    <article class="flex flex-col group cursor-pointer border border-[var(--border-color)] rounded-2xl p-4 bg-[var(--surface-color)] hover:border-primary-500/50 transition-colors shadow-sm relative col-span-1">
       <a href={`/blog/${post.slug}/`} class="absolute inset-0 z-10"><span class="sr-only">View full article</span></a>
       <h3 class="text-lg font-bold tracking-tight text-[var(--text-color)] group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2 line-clamp-2">
         {post.data.title}

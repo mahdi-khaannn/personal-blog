@@ -1,0 +1,93 @@
+---
+import { trustedLogos } from '../../data/trustedLogos';
+
+const repeatedLogos = [...trustedLogos, ...trustedLogos];
+---
+
+<div class="ticker-shell">
+  <div class="ticker-track" aria-label="Trusted by and working alongside">
+    {repeatedLogos.map((logo, index) => (
+      <span class="ticker-item" aria-hidden={index >= trustedLogos.length ? 'true' : 'false'}>
+        <img
+          src={logo.src}
+          alt={index >= trustedLogos.length ? '' : logo.alt}
+          class="ticker-logo"
+          loading={index < trustedLogos.length ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ticker-shell {
+    overflow: hidden;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+  }
+
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    align-items: center;
+    gap: 1.35rem;
+    animation: trusted-scroll 60s linear infinite;
+    will-change: transform;
+  }
+
+  .ticker-item {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(10rem, 18vw);
+  }
+
+  .ticker-logo {
+    width: auto;
+    max-width: min(10rem, 18vw);
+    height: clamp(1.5rem, 2.5vw, 2.25rem);
+    object-fit: contain;
+    opacity: 0.5;
+    filter: brightness(0) invert(1);
+    transition: opacity 180ms ease, filter 180ms ease, transform 180ms ease;
+  }
+
+  :global(:root:not(.dark)) .ticker-logo {
+    opacity: 0.32;
+    filter: brightness(0) saturate(0);
+  }
+
+  .ticker-shell:hover .ticker-logo {
+    opacity: 0.72;
+    filter: brightness(0) invert(1);
+    transform: translateY(-1px);
+  }
+
+  :global(:root:not(.dark)) .ticker-shell:hover .ticker-logo {
+    opacity: 0.48;
+    filter: brightness(0) saturate(0);
+  }
+
+  @keyframes trusted-scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+      animation: none;
+    }
+  }
+</style>

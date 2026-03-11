@@ -5,6 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SpotlightCard from '../components/global/SpotlightCard';
 import RotatingText from '../components/global/RotatingText';
 import ScrollPath from '../components/global/ScrollPath';
+import TrustedTicker from '../components/global/TrustedTicker.astro';
 
 const latestPosts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
@@ -14,23 +15,31 @@ const latestPosts = (await getCollection('blog'))
 
 <BaseLayout title="Mahdi Khan - AI Agents & Orchestration">
   <!-- BACKGROUND DECOR (GitHub Enterprise Vibe) -->
-  <div class="absolute top-0 inset-x-0 h-[800px] overflow-hidden pointer-events-none -z-10 select-none">
-    <div class="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[1200px] h-[500px] bg-primary-600/15 dark:bg-primary-500/10 blur-[120px] rounded-[100%]"></div>
-    <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+  <div class="absolute top-0 inset-x-0 h-[960px] overflow-hidden pointer-events-none -z-10 select-none">
+    <div class="absolute -top-[8%] left-1/2 -translate-x-1/2 w-[1200px] h-[560px] bg-primary-600/18 dark:bg-primary-500/12 blur-[120px] rounded-[100%]"></div>
+    <div class="absolute -top-[16%] right-[6%] w-[420px] h-[420px] bg-primary-300/14 dark:bg-primary-400/8 blur-[80px] rounded-full"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808010_1px,transparent_1px),linear-gradient(to_bottom,#80808010_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
   </div>
 
   <!-- HERO REGION -->
-  <section class="py-16 md:py-24 flex flex-col items-center text-center px-4">
-    <h1 class="text-4xl md:text-6xl lg:text-7xl font-display font-medium mb-12 text-[var(--text-color)] tracking-tighter max-w-4xl leading-[1.1]">
-      The Practitioner's Guide to <br class="hidden md:block" />
-      <RotatingText client:only="react" />
-    </h1>
-    <p class="text-lg md:text-xl text-[var(--text-muted)] max-w-2xl mb-12 leading-relaxed">
-      Deep-dive analysis, architecture patterns, and tutorials for engineering leaders building the next generation of software. Signal, not noise.
-    </p>
-    
-    <!-- V2 Glowing Newsletter CTA -->
-    <div class="w-full max-w-md relative group mb-8">
+  <section class="relative py-16 md:py-24 px-4">
+    <div class="max-w-5xl mx-auto flex flex-col items-center text-center">
+      <div class="inline-flex items-center gap-3 rounded-full border border-[var(--border-color)]/80 bg-[var(--bg-color)]/80 px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)] shadow-sm backdrop-blur">
+        <span class="text-primary-500">(00)</span>
+        <span>Practice-led perspective</span>
+        <span>Deploying, distilling, teaching</span>
+      </div>
+
+      <h1 class="mt-8 flex max-w-5xl flex-wrap items-center justify-center gap-x-5 gap-y-4 text-balance text-4xl font-display font-medium tracking-[-0.05em] text-[var(--text-color)] sm:text-6xl lg:text-7xl">
+        <span>Human-first</span>
+        <RotatingText client:only="react" />
+      </h1>
+      <p class="mt-8 text-lg md:text-xl text-[var(--text-muted)] max-w-3xl leading-relaxed">
+        Field notes on AI systems, public sector digitization, orchestration, and evaluation for teams building where delivery pressure is real and fluff is expensive.
+      </p>
+      
+      <!-- V2 Glowing Newsletter CTA -->
+      <div class="mt-12 w-full max-w-md relative group">
       <div class="absolute -inset-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-2xl blur opacity-25 group-hover:opacity-60 transition duration-1000 group-hover:duration-300"></div>
       <div class="relative bg-[var(--bg-color)] p-1.5 rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.3),0_0_40px_rgba(34,197,94,0.1)] border border-[var(--border-color)]">
         <form class="flex w-full relative" action="/newsletter" method="GET">
@@ -49,35 +58,52 @@ const latestPosts = (await getCollection('blog'))
           </button>
         </form>
       </div>
-    </div>
+      </div>
 
-    <!-- Social Proof Ticker -->
-    <div class="flex items-center justify-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <div class="flex -space-x-2.5">
-          <img class="inline-block h-8 w-8 rounded-full ring-2 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
-          <img class="inline-block h-8 w-8 rounded-full ring-2 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
-          <img class="inline-block h-8 w-8 rounded-full ring-2 ring-[var(--bg-color)] object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar"/>
-          <div class="inline-flex h-8 w-8 items-center justify-center rounded-full ring-2 ring-[var(--bg-color)] bg-[var(--border-color)] text-[10px] font-bold text-[var(--text-color)] z-10 text-center leading-none">+5k</div>
-        </div>
-        <div class="text-xs text-[var(--text-muted)] font-medium text-left leading-tight">
-          Join 5,000+ practitioners getting<br/>the weekly synthesis.
-        </div>
+      <div class="mt-8 flex items-center justify-center gap-3 text-xs font-medium text-[var(--text-muted)]">
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-color)] text-[10px] font-bold text-[var(--text-color)]">5K+</span>
+        <span>Readers and operators following the weekly synthesis.</span>
+      </div>
     </div>
   </section>
 
-  <!-- SCROLL PATH (LevelUp Labs Style) -->
-  <section class="py-12 border-t border-[var(--border-color)] overflow-hidden">
-    <div class="text-center mb-4">
-      <h2 class="text-3xl font-bold tracking-tight text-[var(--text-color)]">The Architecture of Autonomy</h2>
-      <p class="text-[var(--text-muted)] mt-2">A deterministic approach to agentic workflows.</p>
+  <section class="py-8 border-y border-[var(--border-color)] bg-[color-mix(in_srgb,var(--surface-color)_78%,transparent)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">
+          (01) Trusted by and working alongside
+        </div>
+        <div class="text-sm text-[var(--text-muted)]">Institutions, multilaterals, and delivery partners from the portfolio work</div>
+      </div>
+      <TrustedTicker />
     </div>
-    <ScrollPath client:only="react" />
+  </section>
+
+  <section class="py-16 md:py-24 border-b border-[var(--border-color)] overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">
+          <span>(02)</span>
+          <span class="font-brand text-xl normal-case tracking-tight text-primary-500">loop</span>
+          <span>Why this perspective compounds</span>
+        </div>
+        <h2 class="mt-5 text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-[-0.05em] text-[var(--text-color)] text-balance">
+          From deployed work to reusable frameworks.
+        </h2>
+        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--text-muted)]">
+          The core flywheel is simple: work inside live systems, distill the lessons into patterns, then teach what survives contact with reality. That is what turns scattered experience into signal.
+        </p>
+      </div>
+
+      <ScrollPath client:only="react" />
+    </div>
   </section>
 
   <!-- LATEST ARTICLES REGION -->
   <section class="py-12 border-t border-[var(--border-color)]">
     <div class="flex justify-between items-end mb-8">
       <div>
+        <div class="mb-3 text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">(03) Latest analysis</div>
         <h2 class="text-2xl font-bold tracking-tight text-[var(--text-color)]">Latest Analysis</h2>
         <p class="text-[var(--text-muted)] mt-1">Recent deep dives and tutorials.</p>
       </div>

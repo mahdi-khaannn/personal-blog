@@ -4,6 +4,12 @@ import { Moon, Sun } from 'lucide-react';
 export default function DarkModeToggle() {
   const [isDark, setIsDark] = useState(false);
 
+  const applyTheme = (nextIsDark: boolean) => {
+    document.documentElement.classList.toggle('dark', nextIsDark);
+    document.documentElement.dataset.theme = nextIsDark ? 'dark' : 'light';
+    document.documentElement.style.colorScheme = nextIsDark ? 'dark' : 'light';
+  };
+
   useEffect(() => {
     // Check initial state from the class we set in head
     setIsDark(document.documentElement.classList.contains('dark'));
@@ -12,7 +18,7 @@ export default function DarkModeToggle() {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
       if (!localStorage.getItem('theme')) {
-        document.documentElement.classList.toggle('dark', e.matches);
+        applyTheme(e.matches);
         setIsDark(e.matches);
       }
     };
@@ -23,7 +29,7 @@ export default function DarkModeToggle() {
   const toggleTheme = () => {
     const nextIsDark = !isDark;
     setIsDark(nextIsDark);
-    document.documentElement.classList.toggle('dark', nextIsDark);
+    applyTheme(nextIsDark);
     localStorage.setItem('theme', nextIsDark ? 'dark' : 'light');
   };
 
