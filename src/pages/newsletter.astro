@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NewsletterForm from '../components/newsletter/NewsletterForm';
+import { siteConfig } from '../config/site';
 ---
 
 <BaseLayout 
@@ -31,7 +32,7 @@ import NewsletterForm from '../components/newsletter/NewsletterForm';
       <div class="absolute -inset-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-3xl blur opacity-20 group-hover:opacity-50 transition duration-1000 group-hover:duration-300"></div>
       <div class="relative bg-[var(--bg-color)] p-1 rounded-2xl shadow-xl border border-[var(--border-color)]">
         <div class="bg-[var(--bg-color)] p-6 sm:p-8 rounded-xl">
-          <h2 class="text-2xl font-display font-medium tracking-normal text-[var(--text-color)] mb-6 text-center">Get the next issue this Monday</h2>
+          <h2 class="text-2xl font-display font-medium tracking-normal text-[var(--text-color)] mb-6 text-center">Get the next issue {siteConfig.content.newsletterCadence}</h2>
           <NewsletterForm client:load />
         </div>
       </div>

@@ -1,5 +1,4 @@
-const fallbackEmail = 'mahdi20312.khan@gmail.com';
-const fallbackMailto = `mailto:${fallbackEmail}?subject=${encodeURIComponent('Booking inquiry')}`;
+import { bookingEmailHref, siteConfig } from '../../config/site';
 
 const rawCalendlyUrl = typeof import.meta !== 'undefined'
   ? import.meta.env.PUBLIC_CALENDLY_URL?.trim()
@@ -10,7 +9,7 @@ const calendlyUrl = rawCalendlyUrl && rawCalendlyUrl.startsWith('https://calendl
   : '';
 
 const calendlyEmbedUrl = calendlyUrl
-  ? `${calendlyUrl}${calendlyUrl.includes('?') ? '&' : '?'}embed_domain=mahdikhan.com&hide_event_type_details=1&hide_landing_page_details=1&hide_gdpr_banner=1&primary_color=3b82f6`
+  ? `${calendlyUrl}${calendlyUrl.includes('?') ? '&' : '?'}embed_domain=${new URL(siteConfig.siteUrl).hostname}&hide_event_type_details=1&hide_landing_page_details=1&hide_gdpr_banner=1&primary_color=3b82f6`
   : '';
 
 const sessionFormats = [
@@ -63,7 +62,7 @@ export default function CalendarWidget() {
         <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-primary-500">Book a session</div>
         <h3 className="mt-3 text-2xl font-display font-medium text-[var(--text-color)]">Choose the best way to start</h3>
         <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          This footer supports a live Calendly scheduler when available and falls back to direct outreach until the booking link is active.
+          Live scheduling is wired for Calendly. Until the booking link is active, the fastest route is email or LinkedIn.
         </p>
 
         <div className="mt-6 space-y-3">
@@ -87,15 +86,15 @@ export default function CalendarWidget() {
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <a
-            href={fallbackMailto}
+            href={bookingEmailHref}
             className="inline-flex items-center justify-center rounded-full bg-[var(--text-color)] px-5 py-3 text-sm font-medium text-[var(--bg-color)] transition-transform hover:scale-[1.01]"
           >
             Email to book
           </a>
           <a
-            href="https://www.linkedin.com/in/m-mahdi-khan/"
+            href={siteConfig.profiles.linkedin}
             target="_blank"
-            rel="noreferrer"
+            rel="me noreferrer"
             className="inline-flex items-center justify-center rounded-full border border-[var(--border-color)] px-5 py-3 text-sm font-medium text-[var(--text-color)] transition-colors hover:border-primary-500/40 hover:bg-primary-500/8"
           >
             Message on LinkedIn

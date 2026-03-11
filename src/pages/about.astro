@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { emailHref, siteConfig } from '../config/site';
 ---
 
 <BaseLayout 
@@ -47,13 +48,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <h2>Connect</h2>
       <p>
-        The best way to stay in touch is to <a href="/newsletter">subscribe to the newsletter</a>. 
+        The best way to stay in touch is to <a href={siteConfig.routes.newsletter}>subscribe to the newsletter</a>. 
         You can also find me on:
       </p>
       <ul>
-        <li><a href="https://twitter.com/mahdikhan" target="_blank" rel="noopener noreferrer">X (Twitter)</a> for real-time thoughts</li>
-        <li><a href="https://linkedin.com/in/mahdikhan" target="_blank" rel="noopener noreferrer">LinkedIn</a> for professional updates</li>
-        <li><a href="https://github.com/mahdikhan" target="_blank" rel="noopener noreferrer">GitHub</a> for code and experiments</li>
+        <li><a href={siteConfig.profiles.linkedin} target="_blank" rel="me noopener noreferrer">LinkedIn</a> for professional updates</li>
+        <li><a href={siteConfig.profiles.github} target="_blank" rel="me noopener noreferrer">GitHub</a> for code and experiments</li>
+        <li><a href={siteConfig.profiles.medium} target="_blank" rel="me noopener noreferrer">Medium</a> for essays and cross-posted analysis</li>
+        <li><a href={emailHref}>Email</a> for direct outreach</li>
       </ul>
     </div>
   </div>
