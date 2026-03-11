@@ -126,7 +126,7 @@ export default function SearchModal() {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="group flex items-center justify-between gap-2 px-3 py-1.5 w-64 md:w-80 rounded-md border border-[var(--border-color)] bg-[var(--surface-color)] hover:border-primary-400/40 hover:bg-[var(--bg-color)] transition-colors text-sm text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-primary-500 shadow-sm"
+                className="group flex items-center justify-between gap-2 px-3 py-1.5 w-44 sm:w-56 md:w-64 lg:w-80 rounded-md border border-[var(--border-color)] bg-[var(--surface-color)] hover:border-primary-400/40 hover:bg-[var(--bg-color)] transition-colors text-sm text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-primary-500 shadow-sm"
                 aria-label="Search articles"
             >
                 <div className="flex items-center gap-2 truncate">

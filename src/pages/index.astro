@@ -24,7 +24,7 @@ const latestPosts = (await getCollection('blog'))
   <!-- HERO REGION -->
   <section class="relative py-16 md:py-24 px-4">
     <div class="max-w-5xl mx-auto flex flex-col items-center text-center">
-      <h1 class="flex max-w-5xl flex-wrap items-center justify-center gap-x-5 gap-y-4 text-balance text-4xl font-display font-medium tracking-[-0.05em] text-[var(--text-color)] sm:text-6xl lg:text-7xl">
+      <h1 class="flex max-w-5xl flex-col items-center justify-center gap-y-6 text-balance text-4xl font-display font-medium tracking-[-0.05em] text-[var(--text-color)] sm:flex-row sm:flex-wrap sm:gap-x-5 sm:gap-y-4 sm:text-6xl lg:text-7xl">
         <span>Human-first</span>
         <RotatingText client:only="react" />
       </h1>
@@ -61,8 +61,8 @@ const latestPosts = (await getCollection('blog'))
     </div>
   </section>
 
-  <section class="py-8 border-y border-[var(--border-color)] bg-[color-mix(in_srgb,var(--surface-color)_78%,transparent)]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section class="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-hidden border-y border-[var(--border-color)] bg-[color-mix(in_srgb,var(--surface-color)_78%,transparent)] py-8">
+    <div class="px-4 sm:px-6 lg:px-8">
       <TrustedTicker />
     </div>
   </section>

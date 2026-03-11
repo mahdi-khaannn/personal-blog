@@ -9,7 +9,7 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
     {repeatedLogos.map((logo, index) => (
       <span
         class="ticker-item"
-        style={`--logo-width: ${logo.widthRem}rem;`}
+        style={`--logo-width: ${logo.widthRem}rem; --logo-height: ${(logo.heightRem ?? 2.5)}rem; --logo-scale: ${(logo.scale ?? 1)};`}
         aria-hidden={index >= trustedLogos.length ? 'true' : 'false'}
       >
         <img
@@ -40,8 +40,8 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
     display: flex;
     width: max-content;
     align-items: center;
-    gap: clamp(0.75rem, 1.8vw, 1.25rem);
-    animation: trusted-scroll 92s linear infinite;
+    gap: clamp(1rem, 2vw, 1.6rem);
+    animation: trusted-scroll 108s linear infinite;
     will-change: transform;
   }
 
@@ -50,33 +50,37 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-inline: clamp(0.9rem, 2vw, 1.6rem);
+    min-height: clamp(3.3rem, 4.4vw, 4.25rem);
+    padding-inline: clamp(1rem, 2.2vw, 1.7rem);
+    overflow: hidden;
   }
 
   .ticker-logo {
-    width: min(var(--logo-width), 18vw);
-    max-width: none;
-    max-height: clamp(1.75rem, 2.8vw, 2.7rem);
-    height: auto;
+    width: auto;
+    max-width: min(var(--logo-width), 24vw);
+    height: clamp(2.2rem, var(--logo-height), 3.05rem);
+    max-height: 100%;
     object-fit: contain;
-    opacity: 0.52;
+    opacity: 0.68;
     filter: brightness(0) invert(1);
+    transform: scale(var(--logo-scale));
+    transform-origin: center;
     transition: opacity 180ms ease, filter 180ms ease, transform 180ms ease;
   }
 
   :global(:root:not(.dark)) .ticker-logo {
-    opacity: 0.32;
+    opacity: 0.58;
     filter: brightness(0) saturate(0);
   }
 
   .ticker-shell:hover .ticker-logo {
-    opacity: 0.72;
+    opacity: 0.84;
     filter: brightness(0) invert(1);
-    transform: translateY(-1px);
+    transform: scale(calc(var(--logo-scale) * 1.02)) translateY(-1px);
   }
 
   :global(:root:not(.dark)) .ticker-shell:hover .ticker-logo {
-    opacity: 0.48;
+    opacity: 0.7;
     filter: brightness(0) saturate(0);
   }
 

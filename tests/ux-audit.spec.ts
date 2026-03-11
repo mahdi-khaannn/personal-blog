@@ -22,10 +22,16 @@ async function applyTheme(page: Page, theme: 'light' | 'dark') {
 async function collectThemeAudit(page: Page): Promise<ThemeAudit> {
   return page.evaluate(() => {
     const brightness = (color: string) => {
-      const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-      if (!match) return null;
+      const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if (rgbMatch) {
+        const [r, g, b] = rgbMatch.slice(1).map(Number);
+        return Math.round((r * 299 + g * 587 + b * 114) / 1000);
+      }
 
-      const [r, g, b] = match.slice(1).map(Number);
+      const srgbMatch = color.match(/color\(srgb\s+([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)/i);
+      if (!srgbMatch) return null;
+
+      const [r, g, b] = srgbMatch.slice(1).map((value) => Math.round(Number(value) * 255));
       return Math.round((r * 299 + g * 587 + b * 114) / 1000);
     };
 

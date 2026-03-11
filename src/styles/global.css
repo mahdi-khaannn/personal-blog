@@ -15,11 +15,11 @@
   --color-primary-900: #1e3a8a;
 
   /* GitHub Light Mode Palette (Base) */
-  --color-base-50: #ffffff;
-  --color-base-100: #f6f8fa; /* GitHub light surface */
-  --color-base-200: #d0d7de; /* GitHub light border */
-  --color-base-800: #656d76; /* GitHub light muted */
-  --color-base-900: #1F2328; /* GitHub light text */
+  --color-base-50: #eef3f9;
+  --color-base-100: #fbfdff;
+  --color-base-200: #d7e1ec;
+  --color-base-800: #5b6779;
+  --color-base-900: #132033;
 
   /* GitHub Dark Mode Palette (Extended) */
   --color-dark-bg: #0d1117;
@@ -65,6 +65,25 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.14), transparent 32%),
+      radial-gradient(circle at 14% 18%, rgba(14, 165, 233, 0.08), transparent 24%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(243, 247, 252, 0.95) 45%, rgba(238, 243, 249, 1) 100%);
+  }
+
+  :root.dark body::before {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.12), transparent 30%),
+      radial-gradient(circle at 14% 18%, rgba(14, 165, 233, 0.06), transparent 24%),
+      linear-gradient(180deg, rgba(13, 17, 23, 0.9) 0%, rgba(13, 17, 23, 1) 100%);
+  }
+
   body::after {
     content: "";
     position: fixed;
@@ -73,9 +92,9 @@
     width: 100vw;
     height: 100vh;
     pointer-events: none;
-    z-index: 9999;
+    z-index: -1;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    opacity: 0.04;
+    opacity: 0.035;
   }
 
   :root.dark body::after {

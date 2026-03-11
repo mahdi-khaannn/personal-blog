@@ -7,6 +7,10 @@ async function waitForHydration(page: Page) {
   );
 }
 
+async function waitForVisibleControl(page: Page, selector: string) {
+  await page.waitForSelector(selector, { state: 'visible', timeout: 15000 });
+}
+
 async function setTheme(page: Page, theme: 'light' | 'dark') {
   await page.evaluate((nextTheme) => {
     localStorage.setItem('theme', nextTheme);
@@ -22,10 +26,11 @@ test.describe('Mahdi Khan blog flows', () => {
   test('newsletter validates invalid email and completes the success state', async ({ page }) => {
     await page.goto('/newsletter');
     await waitForHydration(page);
+    await waitForVisibleControl(page, 'input[aria-label="Email address"]');
 
     await expect(page.getByRole('heading', { name: 'The Weekly Synthesis' })).toBeVisible();
 
-    const emailInput = page.getByPlaceholder('name@example.com');
+    const emailInput = page.getByLabel('Email address');
     const submitButton = page.getByRole('button', { name: 'Subscribe' });
 
     await expect(emailInput).toBeVisible();
@@ -43,6 +48,7 @@ test.describe('Mahdi Khan blog flows', () => {
   test('search opens from keyboard and returns indexed article results', async ({ page }) => {
     await page.goto('/');
     await waitForHydration(page);
+    await waitForVisibleControl(page, 'button[aria-label="Search articles"]');
     await expect(page.getByRole('button', { name: 'Search articles' })).toBeVisible();
 
     await page.keyboard.press('/');
