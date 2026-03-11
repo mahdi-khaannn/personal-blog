@@ -7,11 +7,7 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
 <div class="ticker-shell">
   <div class="ticker-track" aria-label="Trusted by and working alongside">
     {repeatedLogos.map((logo, index) => (
-      <span
-        class="ticker-item"
-        style={`--logo-width: ${logo.widthRem}rem; --logo-height: ${(logo.heightRem ?? 2.5)}rem; --logo-scale: ${(logo.scale ?? 1)};`}
-        aria-hidden={index >= trustedLogos.length ? 'true' : 'false'}
-      >
+      <span class="ticker-item" aria-hidden={index >= trustedLogos.length ? 'true' : 'false'}>
         <img
           src={logo.src}
           alt={index >= trustedLogos.length ? '' : logo.alt}
@@ -40,7 +36,7 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
     display: flex;
     width: max-content;
     align-items: center;
-    gap: clamp(1rem, 2vw, 1.6rem);
+    gap: clamp(0.9rem, 1.6vw, 1.35rem);
     animation: trusted-scroll 108s linear infinite;
     will-change: transform;
   }
@@ -50,20 +46,18 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: clamp(3.3rem, 4.4vw, 4.25rem);
-    padding-inline: clamp(1rem, 2.2vw, 1.7rem);
+    width: clamp(9.5rem, 11.5vw, 10.75rem);
+    height: clamp(3.55rem, 4.25vw, 4.1rem);
+    padding-inline: clamp(0.65rem, 1vw, 0.9rem);
     overflow: hidden;
   }
 
   .ticker-logo {
-    width: auto;
-    max-width: min(var(--logo-width), 24vw);
-    height: clamp(2.2rem, var(--logo-height), 3.05rem);
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     opacity: 0.68;
     filter: brightness(0) invert(1);
-    transform: scale(var(--logo-scale));
     transform-origin: center;
     transition: opacity 180ms ease, filter 180ms ease, transform 180ms ease;
   }
@@ -76,7 +70,7 @@ const repeatedLogos = [...trustedLogos, ...trustedLogos];
   .ticker-shell:hover .ticker-logo {
     opacity: 0.84;
     filter: brightness(0) invert(1);
-    transform: scale(calc(var(--logo-scale) * 1.02)) translateY(-1px);
+    transform: scale(1.02) translateY(-1px);
   }
 
   :global(:root:not(.dark)) .ticker-shell:hover .ticker-logo {

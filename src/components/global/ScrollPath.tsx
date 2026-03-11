@@ -51,7 +51,7 @@ const stages: Stage[] = [
     icon: BookOpenText,
     posterLabel: 'Operating patterns',
     posterWord: 'Distill',
-    card: { x: 470, y: 500, width: 348 },
+    card: { x: 470, y: 470, width: 348 },
     poster: { x: 534, y: 282, width: 204, height: 206 },
   },
   {
