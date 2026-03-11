@@ -40,8 +40,8 @@ const stages: Stage[] = [
     icon: Radar,
     posterLabel: 'Delivery systems',
     posterWord: 'Deploy',
-    card: { x: 58, y: 458, width: 356 },
-    poster: { x: 58, y: 128, width: 238, height: 226 },
+    card: { x: 64, y: 420, width: 332 },
+    poster: { x: 86, y: 152, width: 214, height: 210 },
   },
   {
     label: 'Distill',
@@ -51,8 +51,8 @@ const stages: Stage[] = [
     icon: BookOpenText,
     posterLabel: 'Operating patterns',
     posterWord: 'Distill',
-    card: { x: 472, y: 540, width: 368 },
-    poster: { x: 530, y: 306, width: 222, height: 214 },
+    card: { x: 470, y: 500, width: 348 },
+    poster: { x: 534, y: 282, width: 204, height: 206 },
   },
   {
     label: 'Teach',
@@ -62,8 +62,8 @@ const stages: Stage[] = [
     icon: GraduationCap,
     posterLabel: 'Teaching loops',
     posterWord: 'Teach',
-    card: { x: 892, y: 372, width: 316 },
-    poster: { x: 926, y: 150, width: 228, height: 224 },
+    card: { x: 874, y: 334, width: 294 },
+    poster: { x: 922, y: 154, width: 208, height: 206 },
   },
 ];
 
@@ -160,9 +160,12 @@ export default function ScrollPath() {
   const signalGlow = mix(0.18, 0.34, clamp01(progress * 1.25));
 
   return (
-    <div className="relative mt-14">
-      <div ref={chapterRef} className="relative hidden h-[210vh] md:block">
-        <div className="sticky top-24 h-[calc(100vh-7rem)] min-h-[760px]">
+    <div className="relative mt-16 xl:mt-18" data-scrollpath-root>
+      <div
+        ref={chapterRef}
+        className="relative hidden xl:block xl:h-[118vh] 2xl:h-[124vh]"
+      >
+        <div className="sticky top-24 h-[calc(100vh-8rem)] min-h-[620px] max-h-[46rem] 2xl:top-28 2xl:h-[calc(100vh-9rem)] 2xl:min-h-[660px]">
           <div className="relative h-full overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(6,15,32,0.96),rgba(8,20,44,0.98))] shadow-[0_44px_120px_rgba(2,6,23,0.42)]">
             <motion.div
               className="pointer-events-none absolute inset-0"
@@ -219,11 +222,28 @@ export default function ScrollPath() {
                   strokeLinecap="round"
                   strokeDasharray="6 10"
                 />
+              </svg>
+            </motion.div>
+
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                opacity: sceneOpacity,
+                transform: `translateY(${foregroundTranslateY}px) scale(${foregroundScale}) perspective(1800px) rotateX(${sceneRotateX}deg)`,
+                transformStyle: 'preserve-3d',
+              }}
+            >
+              <svg
+                viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
+                className="pointer-events-none absolute inset-0 h-full w-full"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
                 <path
                   ref={pathRef}
                   d={MAIN_PATH_D}
                   fill="none"
-                  stroke="color-mix(in srgb, var(--text-color) 50%, transparent)"
+                  stroke="color-mix(in srgb, var(--text-color) 48%, transparent)"
                   strokeWidth="2.8"
                   strokeLinecap="round"
                 />
@@ -239,16 +259,7 @@ export default function ScrollPath() {
                   }}
                 />
               </svg>
-            </motion.div>
 
-            <motion.div
-              className="absolute inset-0"
-              style={{
-                opacity: sceneOpacity,
-                transform: `translateY(${foregroundTranslateY}px) scale(${foregroundScale}) perspective(1800px) rotateX(${sceneRotateX}deg)`,
-                transformStyle: 'preserve-3d',
-              }}
-            >
               {stages.map((stage, index) => {
                 const Icon = stage.icon;
                 const point = stagePoints[index];
@@ -263,12 +274,12 @@ export default function ScrollPath() {
                     : 0.6
                   : clamp01((progress - (STAGE_PROGRESS[index] - 0.22)) / 0.34);
                 const isActive = index <= activeStage;
-                const posterLift = prefersReducedMotion ? 0 : mix(28, -14, intensity);
-                const cardLift = prefersReducedMotion ? 0 : mix(42, -12, intensity);
+                const posterLift = prefersReducedMotion ? 0 : mix(20, -10, intensity);
+                const cardLift = prefersReducedMotion ? 0 : mix(28, -8, intensity);
                 const posterScale = mix(0.97, 1.02, stageReveal);
-                const cardScale = mix(0.98, 1.04, stageReveal);
-                const posterBlur = prefersReducedMotion ? 0 : mix(3.5, 0, stageReveal);
-                const cardBlur = prefersReducedMotion ? 0 : mix(5.5, 0, stageReveal);
+                const cardScale = mix(0.985, 1.03, stageReveal);
+                const posterBlur = prefersReducedMotion ? 0 : mix(2.2, 0, stageReveal);
+                const cardBlur = prefersReducedMotion ? 0 : mix(3.2, 0, stageReveal);
                 const connectorHeight = Math.max(stage.card.y - point.y - 18, 64);
 
                 return (
@@ -417,7 +428,7 @@ export default function ScrollPath() {
         </div>
       </div>
 
-      <div className="space-y-5 md:hidden">
+      <div className="space-y-5 lg:hidden">
         <div className="rounded-[1.8rem] border border-[var(--border-color)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface-color)_90%,transparent),color-mix(in_srgb,var(--bg-color)_96%,transparent))] p-5 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
           <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.22em] text-[var(--text-muted)]">
             <span className="h-2.5 w-2.5 rounded-full bg-primary-500 shadow-[0_0_0_5px_rgba(59,130,246,0.16)]" />

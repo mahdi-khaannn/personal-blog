@@ -24,7 +24,7 @@ const {
 // Ensure stable fallback URL resolution
 const ogImageURL = image 
   ? new URL(image, Astro.site || Astro.url) 
-  : new URL('/images/og-default.webp', Astro.site || Astro.url);
+  : new URL('/og-default.svg', Astro.site || Astro.url);
 const canonical = canonicalURL || new URL(Astro.url.pathname, Astro.site || Astro.url);
 ---
 
